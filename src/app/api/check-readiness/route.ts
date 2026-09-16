@@ -3,9 +3,6 @@ import { GoogleGenAI } from '@google/genai';
 import { createClient } from '@/utils/supabase/server';
 import { generateContentWithFallback } from '@/utils/gemini';
 
-export const runtime = 'edge';
-export const maxDuration = 60;
-
 export async function POST(request: Request) {
   try {
     const { jobDescription } = await request.json();

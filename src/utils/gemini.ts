@@ -1,9 +1,9 @@
 import { GoogleGenAI } from '@google/genai';
 
 const MODELS_TO_TRY = [
-  'gemini-3.6-flash',
-  'gemini-3.5-flash',
-  'gemini-2.5-flash'
+  'gemini-1.5-flash',
+  'gemini-1.5-pro',
+  'gemini-1.0-pro'
 ];
 
 export async function generateContentWithFallback(ai: any, prompt: string, config: any, mockResponse: any) {
