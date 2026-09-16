@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
-import { LogIn, LogOut, Leaf, Swords, ChevronRight } from 'lucide-react';
+import { LogIn, LogOut, Code2, Swords, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export default function Navbar() {
@@ -63,19 +63,20 @@ export default function Navbar() {
           0% { background-position: -200% 0; }
           100% { background-position: 200% 0; }
         }
-        @keyframes leafSway {
-          0%, 100% { transform: rotate(0deg); }
-          25% { transform: rotate(-8deg); }
-          75% { transform: rotate(8deg); }
+        @keyframes iconPulse {
+          0%, 100% { filter: drop-shadow(0 0 6px rgba(34,197,94,0.4)); }
+          50% { filter: drop-shadow(0 0 12px rgba(34,197,94,0.7)); }
         }
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
         .nav-enter {
           animation: navSlideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-        .logo-leaf {
+        .logo-icon {
           transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .logo-leaf:hover {
-          animation: leafSway 0.6s ease-in-out;
+        .logo-icon:hover {
+          animation: iconPulse 0.8s ease-in-out;
+          transform: scale(1.1);
         }
         .nav-link {
           position: relative;
@@ -158,10 +159,10 @@ export default function Navbar() {
             {/* Left: Logo + Nav Links */}
             <div className="flex items-center gap-7">
               <Link href="/" className="flex items-center gap-2.5 group">
-                <div className="logo-leaf relative">
-                  <Leaf className="w-7 h-7 text-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
+                <div className="logo-icon relative">
+                  <Code2 className="w-7 h-7 text-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
                 </div>
-                <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-green-400 via-emerald-300 to-green-500 bg-clip-text text-transparent">
+                <span style={{ fontFamily: "'Fredoka One', cursive" }} className="text-xl tracking-tight bg-gradient-to-r from-green-400 via-emerald-300 to-green-500 bg-clip-text text-transparent">
                   SkillForge
                 </span>
               </Link>
