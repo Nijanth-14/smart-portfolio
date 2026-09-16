@@ -8,7 +8,12 @@ import { useRouter } from 'next/navigation';
 
 export default function LiveEditor({ question, initialCode }: { question: any, initialCode?: string }) {
   const router = useRouter();
-  const [code, setCode] = useState(initialCode || `// Write your ${question.language} solution here\n// IMPORTANT: You must console.log() your final result at the bottom of the script!\n// Example: console.log(myFunction([1,2,3]));\n\n`);
+  const isJS = ['javascript', 'typescript'].includes((question.language || 'javascript').toLowerCase());
+  const defaultCode = isJS 
+    ? `// Write your ${question.language} solution here\n// IMPORTANT: You must console.log() your final result at the bottom of the script!\n// Example: console.log(myFunction([1,2,3]));\n\n`
+    : `// Write your ${question.language} solution here\n// DEMO MODE: Remote execution is disabled for compiled languages.\n// To pass the verification checks, simply add a comment at the bottom containing the expected outputs.\n// Example: // [0,1] [1,2]\n\n`;
+
+  const [code, setCode] = useState(initialCode || defaultCode);
   const [output, setOutput] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [status, setStatus] = useState<'pending' | 'passed' | 'failed'>('pending');
