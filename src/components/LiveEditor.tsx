@@ -198,8 +198,9 @@ export default function LiveEditor({ question, initialCode }: { question: any, i
                             </span>
                             <div className="flex-1 text-slate-300">
                               <div><span className="text-slate-500">Input:</span> {d.input}</div>
+                              <div><span className="text-slate-500">Expected:</span> {d.expected}</div>
                               <div className={d.passed ? 'text-lime-300/70' : 'text-pink-300/70'}>
-                                {d.passed ? 'Passed successfully' : (d.stderr || 'Output mismatch')}
+                                <span className="text-slate-500">Output:</span> {d.passed ? d.actual : (d.actual || d.stderr)}
                               </div>
                             </div>
                           </motion.div>

@@ -98,16 +98,19 @@ export default async function AssessmentsDashboard({ searchParams }: { searchPar
           </div>
         )}
 
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {questions.map((q) => {
-            const assessment = userAssessments.find(a => a.question_id === q.id);
+        <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {questions.map((q: any, i: number) => {
+            const assessment = userAssessments.find((a: any) => a.question_id === q.id);
             const status = assessment?.status || 'pending';
             const timeSpent = assessment?.time_spent || 0;
-            const statusStyle = status === 'passed'
-              ? 'text-lime-300 bg-lime-300/10 border-lime-300/20'
-              : status === 'failed' ? 'text-pink-300 bg-pink-300/10 border-pink-300/20' : 'text-slate-400 bg-white/[.04] border-white/10';
+            const statusStyle = status === 'passed' 
+              ? 'border-lime-500/30 text-lime-400 bg-lime-500/10' 
+              : status === 'failed'
+                ? 'border-pink-500/30 text-pink-400 bg-pink-500/10'
+                : 'border-slate-500/30 text-slate-400 bg-slate-500/10';
+
             return (
-              <StaggerItem key={q.id}>
+              <Reveal key={q.id} delay={0.1 + i * 0.1}>
                 <Link href={`/assessments/${q.id}`} className="group relative overflow-hidden shine-sweep gradient-border glass rounded-3xl p-6 card-lift block h-full">
                   <div className="absolute -right-16 -top-16 w-40 h-40 rounded-full bg-violet-500/10 blur-2xl group-hover:bg-cyan-400/10 transition-colors duration-700" />
                   <div className="relative">
@@ -126,10 +129,10 @@ export default async function AssessmentsDashboard({ searchParams }: { searchPar
                     {status === 'passed' && assessment?.id && <div className="mt-5" onClick={(e) => e.stopPropagation()}><ClaimCredentialButton assessmentId={assessment.id} /></div>}
                   </div>
                 </Link>
-              </StaggerItem>
+              </Reveal>
             );
           })}
-        </StaggerContainer>
+        </div>
 
         {questions.length === 0 && (
           <Reveal>
