@@ -100,7 +100,7 @@ export default function WeeklyFocus() {
               <h3 className="text-sm font-semibold text-indigo-400 mb-1 uppercase tracking-wider">Action Plan</h3>
               <p className="text-indigo-100 mb-4">{focusArea.action}</p>
               
-              <Link href="/assessments?company=general" className="flex items-center gap-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-md transition-colors w-full justify-center">
+              <Link href="/assessments" className="flex items-center gap-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-md transition-colors w-full justify-center">
                 Start 20-Min Exercise <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
