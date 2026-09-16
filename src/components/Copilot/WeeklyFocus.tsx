@@ -1,5 +1,6 @@
+"use client";
 import React, { useState } from 'react';
-import { Target, Github, FileText, ArrowRight } from 'lucide-react';
+import { Target, Code, FileText, ArrowRight } from 'lucide-react';
 
 export default function WeeklyFocus() {
   const [isConnected, setIsConnected] = useState(false);
@@ -49,7 +50,7 @@ export default function WeeklyFocus() {
       {!isConnected ? (
         <div className="flex flex-col items-center justify-center py-8 text-center border-2 border-dashed border-slate-800 rounded-lg bg-slate-900/50">
           <div className="flex gap-4 mb-4">
-            <Github className="w-8 h-8 text-slate-500" />
+            <Code className="w-8 h-8 text-slate-500" />
             <FileText className="w-8 h-8 text-slate-500" />
           </div>
           <p className="text-slate-300 mb-4 max-w-sm">Connect your GitHub and upload your resume to get your personalized technical focus for the week.</p>

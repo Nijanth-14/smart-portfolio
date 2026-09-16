@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from 'react';
 import { Briefcase, CheckCircle2, XCircle, HelpCircle, Code2, Play } from 'lucide-react';
 
