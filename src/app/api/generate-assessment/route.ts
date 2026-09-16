@@ -26,14 +26,17 @@ export async function POST(request: Request) {
     const { GoogleGenAI } = require('@google/genai');
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     
+    const topics = ["Dynamic Programming", "Graph Traversal (BFS/DFS)", "Sliding Window", "Two Pointers", "Binary Search", "Heaps/Priority Queues", "Backtracking", "Linked Lists"];
+    const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+
     const prompt = `
-      You are an expert technical interviewer. Generate a Leetcode-style algorithmic coding challenge.
+      You are an expert technical interviewer. Generate a HIGHLY UNIQUE Leetcode-style algorithmic coding challenge.
       The candidate's primary language is ${language || 'JavaScript'}.
-      ${focus ? `CRITICAL REQUIREMENT: The candidate needs to improve in the following specific areas: ${focus}. Create a question that specifically tests these concepts.` : ''}
+      ${focus ? `CRITICAL REQUIREMENT: The candidate needs to improve in the following specific areas: ${focus}. Create a question that specifically tests these concepts.` : `Please focus the challenge primarily on this algorithmic topic: ${randomTopic}.`}
       
       Requirements:
       1. The question should be challenging but solvable in 15-30 minutes.
-      2. It should test core algorithmic concepts (arrays, strings, hash maps, pointers, etc.).
+      2. DO NOT generate standard/basic questions like 'Two Sum', 'Palindrome', or 'FizzBuzz'. Be creative.
       3. Provide a clear title, description with examples, and 2 exact test cases.
     `;
 

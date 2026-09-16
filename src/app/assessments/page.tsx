@@ -30,8 +30,13 @@ export default async function AssessmentsDashboard() {
   }
 
   // Fetch all questions dynamically, but only keep the ones the user has an assessment for (i.e. they generated it)
+  // We also explicitly hide the old hardcoded Stripe/Google mock questions
   const { data: allQuestions } = await supabase.from('questions').select('*').order('created_at', { ascending: false });
-  const questions = (allQuestions || []).filter(q => userAssessments.some(a => a.question_id === q.id));
+  const questions = (allQuestions || []).filter(q => 
+    userAssessments.some(a => a.question_id === q.id) &&
+    q.id !== '11111111-1111-1111-1111-111111111111' && 
+    q.id !== '22222222-2222-2222-2222-222222222222'
+  );
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 selection:bg-indigo-500/30 p-10 pt-24">
