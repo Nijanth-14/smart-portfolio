@@ -63,20 +63,28 @@ export default function Navbar() {
           0% { background-position: -200% 0; }
           100% { background-position: 200% 0; }
         }
-        @keyframes iconPulse {
-          0%, 100% { filter: drop-shadow(0 0 6px rgba(34,197,94,0.4)); }
-          50% { filter: drop-shadow(0 0 12px rgba(34,197,94,0.7)); }
-        }
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+        @keyframes iconBounceFlip {
+          0%   { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 4px rgba(34,197,94,0.3)); }
+          15%  { transform: scale(1.25) rotate(-12deg); filter: drop-shadow(0 0 10px rgba(34,197,94,0.6)); }
+          30%  { transform: scale(0.9) rotate(8deg); filter: drop-shadow(0 0 14px rgba(34,197,94,0.8)); }
+          45%  { transform: scale(1.15) rotate(-5deg); filter: drop-shadow(0 0 18px rgba(74,222,128,0.9)); }
+          60%  { transform: scale(1.05) rotate(3deg); filter: drop-shadow(0 0 12px rgba(34,197,94,0.7)); }
+          75%  { transform: scale(1.1) rotate(-1deg); filter: drop-shadow(0 0 8px rgba(34,197,94,0.5)); }
+          100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 4px rgba(34,197,94,0.3)); }
+        }
+        .skillforge-nav {
+          font-family: 'Fredoka One', cursive;
+        }
         .nav-enter {
           animation: navSlideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .logo-icon {
-          transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+          cursor: pointer;
         }
         .logo-icon:hover {
-          animation: iconPulse 0.8s ease-in-out;
-          transform: scale(1.1);
+          animation: iconBounceFlip 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .nav-link {
           position: relative;
@@ -147,7 +155,7 @@ export default function Navbar() {
       `}</style>
 
       <nav
-        className={`nav-enter sticky top-0 z-50 transition-all duration-500 ease-out ${
+        className={`skillforge-nav nav-enter sticky top-0 z-50 transition-all duration-500 ease-out ${
           scrolled
             ? 'bg-[#0a0f0a]/75 border-b border-green-900/30 shadow-[0_4px_30px_rgba(0,0,0,0.3)]'
             : 'bg-[#0a0f0a]/50 border-b border-white/[0.04]'
@@ -162,7 +170,7 @@ export default function Navbar() {
                 <div className="logo-icon relative">
                   <Code2 className="w-7 h-7 text-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
                 </div>
-                <span style={{ fontFamily: "'Fredoka One', cursive" }} className="text-xl tracking-tight bg-gradient-to-r from-green-400 via-emerald-300 to-green-500 bg-clip-text text-transparent">
+                <span className="text-xl tracking-tight bg-gradient-to-r from-green-400 via-emerald-300 to-green-500 bg-clip-text text-transparent">
                   SkillForge
                 </span>
               </Link>
