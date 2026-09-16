@@ -20,20 +20,23 @@ export default function Home() {
             Evidence-driven developer growth
           </div>
 
-          <div className="reveal-up mt-8 w-full max-w-5xl flex justify-center" style={{animationDelay:'.08s'}}>
-            <MaskedHeading 
-              text="Build proof. Not promises."
-              src="/water-mirror-bg.jpg"
-              tag="h1"
-              trigger="view"
-              reveal="rise"
-              parallax={34}
-              drift={15}
-              align="center"
-              textScale={0.15}
-              className="font-black tracking-[-.055em] leading-[0.9]"
-            />
-          </div>
+          <h1 className="reveal-up mt-8 max-w-5xl w-full flex flex-col items-center text-5xl sm:text-7xl lg:text-[6.8rem] leading-[.9] font-black tracking-[-.055em]" style={{animationDelay:'.08s'}}>
+            <span>Build proof.</span>
+            <div className="w-full flex justify-center mt-1 sm:mt-2 h-[1.2em]">
+              <MaskedHeading 
+                text="Not promises."
+                src="/bright-water-bg.jpg"
+                tag="div"
+                trigger="view"
+                reveal="wipe"
+                parallax={34}
+                drift={15}
+                align="center"
+                textScale={0.13}
+                className="font-black tracking-[-.055em] leading-[0.9]"
+              />
+            </div>
+          </h1>
 
           <p className="reveal-up mt-8 max-w-2xl text-base sm:text-lg leading-8 text-slate-400" style={{animationDelay:'.16s'}}>
             SkillForge reads your real code, resume and projects to create personalized challenges — then turns what you prove into a portfolio recruiters can verify.
