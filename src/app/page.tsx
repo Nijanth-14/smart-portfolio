@@ -3,6 +3,7 @@ import { ArrowRight, Code2, FileCheck2, Github, Sparkles, Zap, ShieldCheck, Rock
 import WeeklyFocus from '../components/Copilot/WeeklyFocus';
 import JobReadiness from '../components/Copilot/JobReadiness';
 import SplitText from '../components/SplitText';
+import MaskedHeading from '../components/MaskedHeading';
 import Reveal from '../components/motion/Reveal';
 import { StaggerContainer, StaggerItem } from '../components/motion/Stagger';
 import Magnetic from '../components/motion/Magnetic';
@@ -34,24 +35,24 @@ export default function Home() {
             </div>
           </Reveal>
 
-          <h1 className="mt-8 max-w-5xl text-5xl sm:text-7xl lg:text-[6.8rem] leading-[.9] font-black tracking-[-.055em]">
+          <h1 className="mt-8 max-w-5xl w-full flex flex-col items-center text-5xl sm:text-7xl lg:text-[6.8rem] leading-[.9] font-black tracking-[-.055em]">
             <Reveal delay={0.05}>
               <span>Build proof.</span>
             </Reveal>
-            <SplitText
-              text="Not promises."
-              tag="span"
-              className="block text-lightning"
-              delay={28}
-              duration={0.9}
-              ease="power4.out"
-              splitType="chars"
-              from={{ opacity: 0, y: 60, rotateX: -90, scale: 0.6 }}
-              to={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
-              threshold={0.1}
-              rootMargin="0px"
-              textAlign="center"
-            />
+            <div className="w-full flex justify-center mt-1 sm:mt-2 h-[1.2em]">
+              <MaskedHeading
+                text="Not promises."
+                src="/bright-water-bg.jpg"
+                tag="div"
+                trigger="view"
+                reveal="wipe"
+                parallax={34}
+                drift={15}
+                align="center"
+                textScale={0.11}
+                className="font-black tracking-[-.055em] leading-[0.9]"
+              />
+            </div>
           </h1>
 
           <Reveal delay={0.15}>
