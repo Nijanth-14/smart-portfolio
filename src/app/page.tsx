@@ -33,7 +33,7 @@ export default function Home() {
                 drift={15}
                 align="center"
                 textScale={0.13}
-                className="font-black tracking-[-.055em] leading-[0.9]"
+                className="font-black tracking-[-.055em] leading-[0.9] whitespace-nowrap"
               />
             </div>
           </h1>
