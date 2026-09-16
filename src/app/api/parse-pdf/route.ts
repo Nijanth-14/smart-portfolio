@@ -19,7 +19,11 @@ export async function POST(request: Request) {
       
       pdfParser.on("pdfParser_dataError", (errData: any) => reject(errData.parserError));
       pdfParser.on("pdfParser_dataReady", (pdfData: any) => {
-        resolve(pdfParser.getRawTextContent());
+        try {
+          resolve(decodeURIComponent(pdfParser.getRawTextContent()));
+        } catch (e) {
+          resolve(pdfParser.getRawTextContent());
+        }
       });
       
       pdfParser.parseBuffer(buffer);
