@@ -10,18 +10,28 @@ export default function WeeklyFocus() {
     action: string;
   } | null>(null);
 
-  const handleConnect = () => {
+  const handleConnect = async () => {
     setIsAnalyzing(true);
-    // Simulate API call to analyze-profile
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/analyze-github', { method: 'POST' });
+      if (!response.ok) throw new Error('Analysis failed');
+      const data = await response.json();
+      
       setIsConnected(true);
+      // We take the first weakness or generate a message
+      const primaryWeakness = data.analysis_data.weaknesses?.[0] || 'General Improvement';
+      
       setFocusArea({
-        weakness: "State Management in React",
-        evidence: "Your GitHub shows 3 React projects, but recent commits show repeated prop-drilling and inefficient Context usage.",
-        action: "Spend 20 minutes this week building a small to-do app using Zustand or Redux Toolkit to solidify global state concepts."
+        weakness: primaryWeakness,
+        evidence: `Based on your GitHub profile and common stack: ${data.analysis_data.common_stack?.join(', ')}`,
+        action: data.analysis_data.weekly_focus || 'Keep coding and building projects!'
       });
+    } catch (error) {
+      console.error(error);
+      alert('Failed to analyze GitHub data. Have you logged in and synced?');
+    } finally {
       setIsAnalyzing(false);
-    }, 1500);
+    }
   };
 
   return (

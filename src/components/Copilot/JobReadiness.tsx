@@ -6,20 +6,27 @@ export default function JobReadiness() {
   const [isChecking, setIsChecking] = useState(false);
   const [readiness, setReadiness] = useState<any[] | null>(null);
 
-  const handleCheck = () => {
+  const handleCheck = async () => {
     if (!jobDescription.trim()) return;
     setIsChecking(true);
-    // Simulate API call to check-readiness
-    setTimeout(() => {
-      setReadiness([
-        { skill: 'Python', required: true, status: 'strong', evidence: 'Multiple repos, advanced usage' },
-        { skill: 'REST APIs', required: true, status: 'strong', evidence: 'Built 2 production-grade APIs' },
-        { skill: 'SQL', required: true, status: 'moderate', evidence: 'Basic CRUD operations found' },
-        { skill: 'Docker', required: true, status: 'none', evidence: 'No Dockerfiles found in repos' },
-        { skill: 'Testing', required: true, status: 'weak', evidence: 'Only 1 repo has Jest configured' },
-      ]);
+    
+    try {
+      const response = await fetch('/api/check-readiness', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jobDescription })
+      });
+      
+      if (!response.ok) throw new Error('Failed to check readiness');
+      const data = await response.json();
+      
+      setReadiness(data.readiness);
+    } catch (error) {
+      console.error(error);
+      alert('Failed to check readiness. Make sure you are logged in and have analyzed your GitHub profile first.');
+    } finally {
       setIsChecking(false);
-    }, 1500);
+    }
   };
 
   const getStatusIcon = (status: string) => {
@@ -94,8 +101,17 @@ export default function JobReadiness() {
 
           <div className="bg-teal-500/10 border border-teal-500/20 rounded-lg p-4 text-center">
             <h3 className="text-white font-bold mb-2">Close the Gap</h3>
-            <p className="text-teal-200 text-sm mb-4">We found weak/no evidence for <strong className="text-teal-100">Docker</strong> and <strong className="text-teal-100">Testing</strong>. Take a quick assessment to prove these skills and stand out.</p>
-            <button className="inline-flex items-center justify-center gap-2 px-6 py-2 bg-teal-600 hover:bg-teal-500 text-white font-medium rounded-lg transition-all shadow-[0_0_15px_rgba(20,184,166,0.3)] hover:shadow-[0_0_25px_rgba(20,184,166,0.5)]">
+            <p className="text-teal-200 text-sm mb-4">We found areas where your evidence is weak or missing. Take a targeted assessment to prove these skills.</p>
+            <button 
+              onClick={() => {
+                const weaknesses = readiness.filter(r => r.status === 'weak' || r.status === 'none').map(r => r.skill).join(',');
+                if (weaknesses) {
+                   window.location.href = `/assessments?focus=${encodeURIComponent(weaknesses)}`;
+                } else {
+                   alert('You have strong evidence for everything! You are ready to apply.');
+                }
+              }}
+              className="inline-flex items-center justify-center gap-2 px-6 py-2 bg-teal-600 hover:bg-teal-500 text-white font-medium rounded-lg transition-all shadow-[0_0_15px_rgba(20,184,166,0.3)] hover:shadow-[0_0_25px_rgba(20,184,166,0.5)]">
               <Code2 className="w-4 h-4" /> Prepare for this Job
             </button>
           </div>

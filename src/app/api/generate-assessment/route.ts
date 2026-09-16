@@ -6,7 +6,7 @@ import OpenAI from 'openai';
 
 export async function POST(request: Request) {
   try {
-    const { language } = await request.json();
+    const { language, focus } = await request.json();
     const supabase = await createClient();
 
     // Verify authentication
@@ -28,6 +28,7 @@ export async function POST(request: Request) {
     const prompt = `
       You are an expert technical interviewer. Generate a Leetcode-style algorithmic coding challenge.
       The candidate's primary language is ${language || 'JavaScript'}.
+      ${focus ? `CRITICAL REQUIREMENT: The candidate needs to improve in the following specific areas: ${focus}. Create a question that specifically tests these concepts.` : ''}
       
       Requirements:
       1. The question should be challenging but solvable in 15-30 minutes.
