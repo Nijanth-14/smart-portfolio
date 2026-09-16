@@ -95,7 +95,7 @@ export default async function PortfolioPage({ params }: { params: Promise<{ user
                 {verifiedCredentials.length ? verifiedCredentials.map((cred: any) => (
                   <div key={cred.id} className="group glass rounded-2xl p-4 card-lift">
                     <div className="flex gap-3"><div className="w-9 h-9 rounded-xl bg-lime-300/10 grid place-items-center text-lime-300"><Award className="w-4 h-4" /></div><div className="min-w-0"><h3 className="font-bold text-white truncate">{cred.title}</h3><p className="text-xs text-slate-500 mt-1">{cred.issuer}</p></div></div>
-                    <a href={cred.url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-cyan-300 hover:text-white transition">Verify credential <ExternalLink className="w-3 h-3" /></a>
+                    <a href={cred.url} target="_blank" rel="noopener noreferrer" className="interactive-bounce mt-3 inline-flex items-center gap-1 text-xs font-bold text-cyan-300 hover:text-white transition">Verify credential <ExternalLink className="w-3 h-3" /></a>
                   </div>
                 )) : <p className="text-sm text-slate-500">No credentials yet.</p>}
               </div>

@@ -98,7 +98,7 @@ export default function JobReadiness() {
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             placeholder="Paste Job Description here..."
-            className="w-full h-32 glass rounded-2xl border border-white/10 p-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500/50 resize-none"
+            className="w-full h-32 glass rounded-2xl p-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500/50 resize-none transition-shadow"
           />
           
           <div className="flex items-center justify-between">
@@ -113,7 +113,7 @@ export default function JobReadiness() {
               <button 
                 type="button"
                 disabled={isUploading || isChecking}
-                className="flex items-center gap-2 px-4 py-2 bg-white/[.05] hover:bg-slate-700 disabled:opacity-50 text-slate-300 text-sm font-medium rounded-lg transition-colors border border-white/10"
+                className="interactive-bounce flex items-center gap-2 px-4 py-2 glass hover:bg-slate-700 disabled:opacity-50 text-slate-300 text-sm font-medium rounded-lg transition-colors border border-white/10"
               >
                 {isUploading ? <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-slate-300"></span> : <Upload className="w-4 h-4" />}
                 {isUploading ? 'Extracting text...' : 'Upload PDF'}
@@ -127,7 +127,7 @@ export default function JobReadiness() {
           <button 
             onClick={handleCheck}
             disabled={isChecking || !jobDescription.trim()}
-            className="w-full py-2 bg-gradient-to-r from-cyan-400 to-violet-500 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="interactive-bounce w-full py-2 bg-gradient-to-r from-cyan-400 to-violet-500 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
           >
             {isChecking ? (
               <span className="flex items-center gap-2">Checking Evidence... <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span></span>
@@ -149,7 +149,7 @@ export default function JobReadiness() {
               </thead>
               <tbody className="divide-y divide-slate-700">
                 {readiness.map((item, idx) => (
-                  <tr key={idx} className="hover:bg-white/[.05]/50 transition-colors">
+                  <tr key={idx} className="interactive-bounce hover:bg-white/[.05]/50 transition-colors">
                     <td className="px-4 py-3 font-medium text-white">{item.skill}</td>
                     <td className="px-4 py-3 text-slate-400">{item.evidence}</td>
                     <td className="px-4 py-3">
@@ -176,12 +176,12 @@ export default function JobReadiness() {
                    toast.success('You have strong evidence for everything! You are ready to apply.');
                 }
               }}
-              className="inline-flex items-center justify-center gap-2 px-6 py-2 bg-gradient-to-r from-cyan-400 to-violet-500 hover:brightness-110 text-white font-medium rounded-lg transition-all shadow-[0_0_15px_rgba(20,184,166,0.3)] hover:shadow-[0_0_25px_rgba(20,184,166,0.5)]">
+              className="interactive-bounce inline-flex items-center justify-center gap-2 px-6 py-2 bg-gradient-to-r from-cyan-400 to-violet-500 hover:brightness-110 text-white font-medium rounded-lg transition-all shadow-[0_0_15px_rgba(20,184,166,0.3)] hover:shadow-[0_0_25px_rgba(20,184,166,0.5)]">
               <Code2 className="w-4 h-4" /> Prepare for this Job
             </button>
           </div>
           
-          <button onClick={() => setReadiness(null)} className="text-sm text-slate-400 hover:text-white transition-colors w-full text-center">
+          <button onClick={() => setReadiness(null)} className="interactive-bounce text-sm text-slate-400 hover:text-white transition-colors w-full text-center">
             Check another job description
           </button>
         </div>

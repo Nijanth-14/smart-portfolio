@@ -32,7 +32,7 @@ export default function Home() {
             <Link href="/assessments" className="glow-button rounded-2xl px-7 py-4 bg-gradient-to-r from-cyan-300 via-sky-200 to-violet-300 text-slate-950 font-black flex items-center justify-center gap-2 shadow-[0_0_45px_rgba(0,229,255,.16)]">
               <Zap className="w-5 h-5" /> Enter the forge <ArrowRight className="w-4 h-4" />
             </Link>
-            <a href="#how" className="rounded-2xl px-7 py-4 glass text-slate-200 font-semibold hover:bg-white/[.09] transition">
+            <a href="#how" className="interactive-bounce rounded-2xl px-7 py-4 glass text-slate-200 font-semibold hover:bg-white/[.09] transition">
               See how it works
             </a>
           </div>
