@@ -12,11 +12,12 @@ export default async function AssessmentsDashboard({ searchParams }: { searchPar
   // Fetch questions dynamically based on the active company mode
   let questionQuery = supabase.from('questions').select('*');
   if (currentCompany === 'stripe') {
-    questionQuery = questionQuery.eq('id', 'q-stripe-1');
+    questionQuery = questionQuery.eq('id', '11111111-1111-1111-1111-111111111111');
   } else if (currentCompany === 'google') {
-    questionQuery = questionQuery.eq('id', 'q-google-1');
+    questionQuery = questionQuery.eq('id', '22222222-2222-2222-2222-222222222222');
   } else {
-    questionQuery = questionQuery.not('id', 'like', 'q-%');
+    // General questions are the ones not matching our dummy UUIDs
+    questionQuery = questionQuery.not('id', 'in', '("11111111-1111-1111-1111-111111111111", "22222222-2222-2222-2222-222222222222")');
   }
   const { data: questions } = await questionQuery;
   
