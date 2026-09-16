@@ -1,7 +1,7 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import { PortfolioCard } from '@/components/PortfolioCard';
-import { Github, Code, Award, ExternalLink, GitBranch, Star } from 'lucide-react';
+import { User, Code, Award, ExternalLink, GitBranch, Star } from 'lucide-react';
 
 async function getPortfolioData(userId: string) {
   // Use absolute URL for server-side fetching
@@ -14,8 +14,9 @@ async function getPortfolioData(userId: string) {
   return res.json();
 }
 
-export default async function PortfolioPage({ params }: { params: { userId: string } }) {
-  const data = await getPortfolioData(params.userId);
+export default async function PortfolioPage({ params }: { params: Promise<{ userId: string }> }) {
+  const { userId } = await params;
+  const data = await getPortfolioData(userId);
 
   if (!data) {
     notFound();
@@ -48,7 +49,7 @@ export default async function PortfolioPage({ params }: { params: { userId: stri
               {profile.full_name}
             </h1>
             <p className="text-xl text-slate-400 flex items-center justify-center md:justify-start gap-2">
-              <Github className="w-5 h-5" /> 
+              <User className="w-5 h-5" /> 
               @{profile.username}
             </p>
             
