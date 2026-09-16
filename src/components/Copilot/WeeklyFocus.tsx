@@ -13,11 +13,19 @@ export default function WeeklyFocus() {
 
   const handleConnect = async () => {
     setIsAnalyzing(true);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
+
     try {
-      const response = await fetch('/api/analyze-github', { method: 'POST' });
+      const response = await fetch('/api/analyze-github', { 
+        method: 'POST',
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}));
-        throw new Error(errData.error || 'Analysis failed');
+        throw new Error(errData.error || `Server returned ${response.status}`);
       }
       const data = await response.json();
       
@@ -32,7 +40,11 @@ export default function WeeklyFocus() {
       });
     } catch (error: any) {
       console.error(error);
-      alert(`Error: ${error.message}`);
+      if (error.name === 'AbortError') {
+        alert('Error: The analysis timed out. The server took too long to respond.');
+      } else {
+        alert(`Error: ${error.message}`);
+      }
     } finally {
       setIsAnalyzing(false);
     }
