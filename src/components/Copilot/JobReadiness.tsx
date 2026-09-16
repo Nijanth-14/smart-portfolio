@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
-import { Briefcase, CheckCircle2, XCircle, HelpCircle, Code2, Play } from 'lucide-react';
+import { Briefcase, CheckCircle, XCircle, AlertCircle, ArrowRight, Code2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function JobReadiness() {
   const [jobDescription, setJobDescription] = useState('');
@@ -27,7 +28,7 @@ export default function JobReadiness() {
       setReadiness(data.readiness);
     } catch (error: any) {
       console.error(error);
-      alert(`Error: ${error.message}`);
+      toast.error(error.message || 'Failed to check job readiness');
     } finally {
       setIsChecking(false);
     }
@@ -35,9 +36,9 @@ export default function JobReadiness() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'strong': return <CheckCircle2 className="w-5 h-5 text-emerald-400" />;
-      case 'moderate': return <CheckCircle2 className="w-5 h-5 text-amber-400" />;
-      case 'weak': return <HelpCircle className="w-5 h-5 text-orange-400" />;
+      case 'strong': return <CheckCircle className="w-5 h-5 text-emerald-400" />;
+      case 'moderate': return <CheckCircle className="w-5 h-5 text-amber-400" />;
+      case 'weak': return <AlertCircle className="w-5 h-5 text-orange-400" />;
       case 'none': return <XCircle className="w-5 h-5 text-rose-400" />;
       default: return null;
     }
@@ -112,7 +113,7 @@ export default function JobReadiness() {
                 if (weaknesses) {
                    window.location.href = `/assessments?focus=${encodeURIComponent(weaknesses)}`;
                 } else {
-                   alert('You have strong evidence for everything! You are ready to apply.');
+                   toast.success('You have strong evidence for everything! You are ready to apply.');
                 }
               }}
               className="inline-flex items-center justify-center gap-2 px-6 py-2 bg-teal-600 hover:bg-teal-500 text-white font-medium rounded-lg transition-all shadow-[0_0_15px_rgba(20,184,166,0.3)] hover:shadow-[0_0_25px_rgba(20,184,166,0.5)]">

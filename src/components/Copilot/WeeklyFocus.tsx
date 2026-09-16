@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { Target, Code, FileText, ArrowRight } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function WeeklyFocus() {
   const [isConnected, setIsConnected] = useState(false);
@@ -41,9 +42,9 @@ export default function WeeklyFocus() {
     } catch (error: any) {
       console.error(error);
       if (error.name === 'AbortError') {
-        alert('Error: The analysis timed out. The server took too long to respond.');
+        toast.error('The analysis timed out. The server took too long to respond.');
       } else {
-        alert(`Error: ${error.message}`);
+        toast.error(error.message || 'Analysis failed');
       }
     } finally {
       setIsAnalyzing(false);

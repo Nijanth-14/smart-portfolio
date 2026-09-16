@@ -20,7 +20,8 @@
     "octokit": "^5.0.5",
     "openai": "^7.15.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "react-hot-toast": "^2.6.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

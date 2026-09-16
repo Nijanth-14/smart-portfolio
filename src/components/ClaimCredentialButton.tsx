@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Award, Loader2 } from 'lucide-react';
+import { Trophy, Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export function ClaimCredentialButton({ assessmentId }: { assessmentId: string }) {
   const router = useRouter();
@@ -20,13 +21,16 @@ export function ClaimCredentialButton({ assessmentId }: { assessmentId: string }
       });
       
       const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || 'Failed to claim credential');
+        return;
+      }
+
       if (data.credentialId) {
         router.push(`/verify/${data.credentialId}`);
-      } else {
-        alert(data.error || 'Failed to claim credential');
       }
     } catch (error) {
-      alert('An error occurred while claiming your credential.');
+      toast.error('An error occurred while claiming your credential.');
     } finally {
       setIsClaiming(false);
     }

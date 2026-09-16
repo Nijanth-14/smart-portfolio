@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Sparkles, Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export function GenerateAssessmentButton({ language }: { language: string }) {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -31,10 +32,9 @@ export function GenerateAssessmentButton({ language }: { language: string }) {
 
       // Refresh the page to show the new assessment
       router.refresh();
-      alert('Successfully generated a new challenge! It has been added to the top of your list below.');
+      toast.success('Successfully generated a new challenge! It has been added to the top of your list below.');
     } catch (error: any) {
-      console.error('Error generating assessment:', error);
-      alert(error.message || 'Failed to generate assessment. Please try again.');
+      toast.error(error.message || 'Failed to generate assessment. Please try again.');
     } finally {
       setIsGenerating(false);
     }
