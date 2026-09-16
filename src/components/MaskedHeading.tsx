@@ -123,7 +123,7 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
       glyph.style.letterSpacing = cs.letterSpacing;
     }
     place();
-  }, [place]);
+  }, [place, words]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -286,7 +286,7 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
   return (
     <TagAny
       ref={rootRef}
-      className={`relative w-full m-0 p-0 antialiased [text-wrap:balance] ${className}`.trim()}
+      className={`relative w-full m-0 p-0 antialiased ${className}`.trim()}
       style={{
         textAlign: align,
         fontWeight: weight,
@@ -303,7 +303,7 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
             ref={(el: HTMLSpanElement | null) => {
               wordRefs.current[i] = el;
             }}
-            className="inline-block whitespace-pre [&:not(:last-child)]:after:content-['\\00a0']"
+            className="inline-block whitespace-nowrap [&:not(:last-child)]:mr-[0.28em]"
           >
             {word}
             <i
