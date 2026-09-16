@@ -1,0 +1,110 @@
+import React, { useState } from 'react';
+import { Briefcase, CheckCircle2, XCircle, HelpCircle, Code2, Play } from 'lucide-react';
+
+export default function JobReadiness() {
+  const [jobDescription, setJobDescription] = useState('');
+  const [isChecking, setIsChecking] = useState(false);
+  const [readiness, setReadiness] = useState<any[] | null>(null);
+
+  const handleCheck = () => {
+    if (!jobDescription.trim()) return;
+    setIsChecking(true);
+    // Simulate API call to check-readiness
+    setTimeout(() => {
+      setReadiness([
+        { skill: 'Python', required: true, status: 'strong', evidence: 'Multiple repos, advanced usage' },
+        { skill: 'REST APIs', required: true, status: 'strong', evidence: 'Built 2 production-grade APIs' },
+        { skill: 'SQL', required: true, status: 'moderate', evidence: 'Basic CRUD operations found' },
+        { skill: 'Docker', required: true, status: 'none', evidence: 'No Dockerfiles found in repos' },
+        { skill: 'Testing', required: true, status: 'weak', evidence: 'Only 1 repo has Jest configured' },
+      ]);
+      setIsChecking(false);
+    }, 1500);
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'strong': return <CheckCircle2 className="w-5 h-5 text-emerald-400" />;
+      case 'moderate': return <CheckCircle2 className="w-5 h-5 text-amber-400" />;
+      case 'weak': return <HelpCircle className="w-5 h-5 text-orange-400" />;
+      case 'none': return <XCircle className="w-5 h-5 text-rose-400" />;
+      default: return null;
+    }
+  };
+
+  return (
+    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-lg">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="p-2 bg-teal-500/10 rounded-lg">
+          <Briefcase className="w-6 h-6 text-teal-400" />
+        </div>
+        <div>
+          <h2 className="text-xl font-bold text-white">Job Readiness Checker</h2>
+          <p className="text-slate-400 text-sm">Compare Job Requirements against your Evidence</p>
+        </div>
+      </div>
+
+      {!readiness ? (
+        <div className="space-y-4">
+          <textarea 
+            value={jobDescription}
+            onChange={(e) => setJobDescription(e.target.value)}
+            placeholder="Paste Job Description here..."
+            className="w-full h-32 bg-slate-800/50 border border-slate-700 rounded-lg p-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500/50 resize-none"
+          />
+          <button 
+            onClick={handleCheck}
+            disabled={isChecking || !jobDescription.trim()}
+            className="w-full py-2 bg-teal-600 hover:bg-teal-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+          >
+            {isChecking ? (
+              <span className="flex items-center gap-2">Checking Evidence... <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span></span>
+            ) : (
+              "Check Readiness"
+            )}
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-6 animate-in fade-in duration-500">
+          <div className="overflow-hidden border border-slate-700 rounded-lg bg-slate-800/30">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-slate-800/80 text-slate-300">
+                <tr>
+                  <th className="px-4 py-3 font-medium">Requirement</th>
+                  <th className="px-4 py-3 font-medium">Your Evidence</th>
+                  <th className="px-4 py-3 font-medium text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-700">
+                {readiness.map((item, idx) => (
+                  <tr key={idx} className="hover:bg-slate-800/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-white">{item.skill}</td>
+                    <td className="px-4 py-3 text-slate-400">{item.evidence}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-2">
+                        <span className="capitalize text-slate-300">{item.status}</span>
+                        {getStatusIcon(item.status)}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="bg-teal-500/10 border border-teal-500/20 rounded-lg p-4 text-center">
+            <h3 className="text-white font-bold mb-2">Close the Gap</h3>
+            <p className="text-teal-200 text-sm mb-4">We found weak/no evidence for <strong className="text-teal-100">Docker</strong> and <strong className="text-teal-100">Testing</strong>. Take a quick assessment to prove these skills and stand out.</p>
+            <button className="inline-flex items-center justify-center gap-2 px-6 py-2 bg-teal-600 hover:bg-teal-500 text-white font-medium rounded-lg transition-all shadow-[0_0_15px_rgba(20,184,166,0.3)] hover:shadow-[0_0_25px_rgba(20,184,166,0.5)]">
+              <Code2 className="w-4 h-4" /> Prepare for this Job
+            </button>
+          </div>
+          
+          <button onClick={() => setReadiness(null)} className="text-sm text-slate-400 hover:text-white transition-colors w-full text-center">
+            Check another job description
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
