@@ -25,8 +25,9 @@ export default async function AssessmentsDashboard({ searchParams }: { searchPar
     userAssessments = assessments || [];
 
     const { data: profile } = await supabase.from('profiles').select('github_stats').eq('id', user.id).single();
-    if (profile?.github_stats?.top_languages?.length > 0) {
-      topLanguage = profile.github_stats.top_languages[0];
+    const stats: any = profile?.github_stats;
+    if (stats?.top_languages?.length > 0) {
+      topLanguage = stats.top_languages[0];
     }
   }
 
