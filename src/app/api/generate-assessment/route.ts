@@ -85,8 +85,7 @@ export async function POST(request: Request) {
     const { error: assessmentError } = await supabaseAdmin.from('assessments').insert({
       user_id: user.id,
       question_id: newQuestion.id,
-      status: 'pending',
-      code: ''
+      status: 'pending'
     });
 
     if (assessmentError) {
