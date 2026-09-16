@@ -64,6 +64,23 @@ export default function Navbar() {
           <div className="flex items-center gap-4">
             {user ? (
               <>
+                <div className="flex items-center gap-3 mr-4 pl-4 border-l border-slate-800">
+                  {user.user_metadata?.avatar_url ? (
+                    <img 
+                      src={user.user_metadata.avatar_url} 
+                      alt="Avatar" 
+                      className="w-8 h-8 rounded-full border border-slate-700"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
+                      <User className="w-4 h-4 text-indigo-400" />
+                    </div>
+                  )}
+                  <span className="text-sm font-medium text-slate-300">
+                    {user.user_metadata?.preferred_username || user.user_metadata?.user_name || 'Developer'}
+                  </span>
+                </div>
+                
                 <Link 
                   href={`/portfolio/${user.id}`}
                   className="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors px-3 py-2 rounded-md hover:bg-slate-800"
