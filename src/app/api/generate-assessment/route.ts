@@ -15,8 +15,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json({ error: 'OpenAI API key missing in environment variables' }, { status: 500 });
+    if (!process.env.GROQ_API_KEY) {
+      return NextResponse.json({ error: 'Groq API key missing in environment variables' }, { status: 500 });
     }
     if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
       return NextResponse.json({ error: 'Supabase Service Role Key missing in environment variables' }, { status: 500 });
@@ -44,11 +44,12 @@ export async function POST(request: Request) {
     `;
 
     const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: process.env.GROQ_API_KEY,
+      baseURL: "https://api.groq.com/openai/v1",
     });
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "llama3-70b-8192",
       messages: [
         { role: "system", content: "You are a coding assessment generator. You must respond with valid JSON only." },
         { role: "user", content: prompt }
