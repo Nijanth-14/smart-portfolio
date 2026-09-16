@@ -3,25 +3,15 @@ import Link from 'next/link';
 import { createClient } from '@/utils/supabase/server';
 import { Terminal, CheckCircle, Clock, Sparkles, Building2, Briefcase } from 'lucide-react';
 import { ClaimCredentialButton } from '@/components/ClaimCredentialButton';
-
 import { GenerateAssessmentButton } from '@/components/GenerateAssessmentButton';
 
-export default async function AssessmentsDashboard({ searchParams }: { searchParams: Promise<{ company?: string }> }) {
-  const { company } = await searchParams;
-  const currentCompany = company || 'general';
+export const dynamic = 'force-dynamic';
+
+export default async function AssessmentsDashboard() {
   const supabase = await createClient();
 
-  // Fetch questions dynamically based on the active company mode
-  let questionQuery = supabase.from('questions').select('*').order('created_at', { ascending: false });
-  if (currentCompany === 'stripe') {
-    questionQuery = questionQuery.eq('id', '11111111-1111-1111-1111-111111111111');
-  } else if (currentCompany === 'google') {
-    questionQuery = questionQuery.eq('id', '22222222-2222-2222-2222-222222222222');
-  } else {
-    // General questions are the ones not matching our dummy UUIDs
-    questionQuery = questionQuery.not('id', 'in', '("11111111-1111-1111-1111-111111111111", "22222222-2222-2222-2222-222222222222")');
-  }
-  const { data: questions } = await questionQuery;
+  // Fetch all questions dynamically
+  const { data: questions } = await supabase.from('questions').select('*').order('created_at', { ascending: false });
   
   // Try fetching user assessments and profile if logged in
   const { data: { user } } = await supabase.auth.getUser();
@@ -56,58 +46,23 @@ export default async function AssessmentsDashboard({ searchParams }: { searchPar
             </p>
           </div>
           
-          <div className="flex bg-slate-900/80 p-1 rounded-lg border border-slate-800 self-start md:self-auto">
-            <Link 
-              href="/assessments?company=general"
-              className={`px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors ${currentCompany === 'general' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
-            >
-              <Sparkles className="w-4 h-4" /> General Skills
-            </Link>
-            <Link 
-              href="/assessments?company=stripe"
-              className={`px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors ${currentCompany === 'stripe' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
-            >
-              <Building2 className="w-4 h-4" /> Stripe
-            </Link>
-            <Link 
-              href="/assessments?company=google"
-              className={`px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors ${currentCompany === 'google' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
-            >
-              <Building2 className="w-4 h-4" /> Google
-            </Link>
-          </div>
         </div>
 
-        {currentCompany === 'general' ? (
-          <div className="mb-8 p-5 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl flex items-start gap-4">
-            <div className="p-3 bg-indigo-500/20 rounded-full mt-1">
-              <Sparkles className="w-6 h-6 text-indigo-400" />
-            </div>
-            <div className="w-full">
-              <h3 className="text-xl font-bold text-white mb-2">AI-Personalized Skill Match</h3>
-              <p className="text-slate-400 leading-relaxed">
-                We analyzed your GitHub profile and noticed your primary expertise is in <strong className="text-indigo-300">{topLanguage}</strong>. 
-                Our AI model has dynamically selected the following LeetCode-style challenges to accurately evaluate your strongest skill sets.
-              </p>
-              {user && (
-                <GenerateAssessmentButton language={topLanguage} />
-              )}
-            </div>
+        <div className="mb-8 p-5 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl flex items-start gap-4">
+          <div className="p-3 bg-indigo-500/20 rounded-full mt-1">
+            <Sparkles className="w-6 h-6 text-indigo-400" />
           </div>
-        ) : (
-          <div className="mb-8 p-5 bg-teal-500/10 border border-teal-500/20 rounded-2xl flex items-start gap-4">
-            <div className="p-3 bg-teal-500/20 rounded-full mt-1">
-              <Briefcase className="w-6 h-6 text-teal-400" />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-white mb-2">{currentCompany.charAt(0).toUpperCase() + currentCompany.slice(1)}'s Custom Question Bank</h3>
-              <p className="text-slate-400 leading-relaxed">
-                You are applying to {currentCompany.charAt(0).toUpperCase() + currentCompany.slice(1)}. 
-                Our AI has selected these proprietary questions from their custom question set because they perfectly match your <strong className="text-teal-300">{topLanguage}</strong> experience on GitHub.
-              </p>
-            </div>
+          <div className="w-full">
+            <h3 className="text-xl font-bold text-white mb-2">AI-Personalized Skill Match</h3>
+            <p className="text-slate-400 leading-relaxed">
+              We analyzed your GitHub profile and noticed your primary expertise is in <strong className="text-indigo-300">{topLanguage}</strong>. 
+              Our AI model can dynamically select LeetCode-style challenges to accurately evaluate your strongest skill sets.
+            </p>
+            {user && (
+              <GenerateAssessmentButton language={topLanguage} />
+            )}
           </div>
-        )}
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {questions?.map((q) => {
@@ -118,16 +73,13 @@ export default async function AssessmentsDashboard({ searchParams }: { searchPar
               <Link 
                 href={`/assessments/${q.id}`} 
                 key={q.id}
-                className={`group relative overflow-hidden bg-slate-900/50 backdrop-blur-md border rounded-2xl p-6 shadow-xl transition-all block
-                  ${currentCompany === 'general' ? 'border-slate-700/50 hover:border-indigo-500/50' : 'border-slate-700/50 hover:border-teal-500/50'}
-                  hover:shadow-2xl`}
+                className={`group relative overflow-hidden bg-slate-900/50 backdrop-blur-md border rounded-2xl p-6 shadow-xl transition-all block border-slate-700/50 hover:border-indigo-500/50 hover:shadow-2xl`}
               >
-                <div className={`absolute top-0 right-0 w-32 h-32 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-150
-                  ${currentCompany === 'general' ? 'bg-indigo-500/5' : 'bg-teal-500/5'}`}></div>
+                <div className={`absolute top-0 right-0 w-32 h-32 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-150 bg-indigo-500/5`}></div>
                 
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${currentCompany === 'general' ? 'bg-indigo-500/20 text-indigo-400' : 'bg-teal-500/20 text-teal-400'}`}>
+                    <div className={`p-2 rounded-lg bg-indigo-500/20 text-indigo-400`}>
                       <Terminal className="w-5 h-5" />
                     </div>
                     <h2 className="text-xl font-semibold text-white">{q.title}</h2>
