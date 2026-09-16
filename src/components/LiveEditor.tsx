@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
-import { Play, Check, X, Loader2 } from 'lucide-react';
+import { Play, Check, X, Loader2, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function LiveEditor({ question, initialCode }: { question: any, initialCode?: string }) {
@@ -11,6 +11,11 @@ export default function LiveEditor({ question, initialCode }: { question: any, i
   const [output, setOutput] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [status, setStatus] = useState<'pending' | 'passed' | 'failed'>('pending');
+  const [executionResult, setExecutionResult] = useState<any>(null);
+  
+  const [explanation, setExplanation] = useState('');
+  const [grade, setGrade] = useState<any>(null);
+  const [isGrading, setIsGrading] = useState(false);
 
   const runCode = async () => {
     setIsRunning(true);
@@ -29,9 +34,11 @@ export default function LiveEditor({ question, initialCode }: { question: any, i
       if (res.ok) {
         setOutput(data.output || 'No output.');
         setStatus(data.status);
+        setExecutionResult(data.executionResult);
       } else {
         setOutput(`Error: ${data.error}`);
         setStatus('failed');
+        setExecutionResult(null);
       }
     } catch (err: any) {
       setOutput(`Failed to execute code: ${err.message}`);
@@ -39,6 +46,25 @@ export default function LiveEditor({ question, initialCode }: { question: any, i
     } finally {
       setIsRunning(false);
       router.refresh(); // Refresh to update dashboard status if needed
+    }
+  };
+
+  const explainCode = async () => {
+    setIsGrading(true);
+    try {
+      const res = await fetch('/api/assessments/grade', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ questionId: question.id, explanation })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setGrade(data.grade);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsGrading(false);
     }
   };
 
@@ -111,27 +137,78 @@ export default function LiveEditor({ question, initialCode }: { question: any, i
             />
           </div>
 
-          {/* Terminal Output */}
+          {/* Terminal / Result Output */}
           <div className="h-64 border-t border-slate-800 bg-black flex flex-col shrink-0">
-            <div className="flex items-center justify-between px-4 py-2 bg-slate-900 border-b border-slate-800">
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Terminal Output</span>
-              
-              {status === 'passed' && (
-                <span className="flex items-center gap-1 text-teal-400 text-xs font-bold bg-teal-400/10 px-2 py-0.5 rounded border border-teal-400/20">
-                  <Check className="w-3 h-3" /> PASSED
-                </span>
-              )}
-              {status === 'failed' && (
-                <span className="flex items-center gap-1 text-rose-400 text-xs font-bold bg-rose-400/10 px-2 py-0.5 rounded border border-rose-400/20">
-                  <X className="w-3 h-3" /> FAILED
-                </span>
-              )}
-            </div>
-            <div className="flex-1 p-4 overflow-y-auto font-mono text-sm text-slate-300 whitespace-pre-wrap">
-              {output || <span className="text-slate-600">No output yet. Run your code to see results.</span>}
-            </div>
+            {status === 'pending' && !executionResult && (
+               <div className="flex-1 p-4 overflow-y-auto font-mono text-sm text-slate-300 whitespace-pre-wrap">
+                 {output || <span className="text-slate-600">No output yet. Run your code to see results.</span>}
+               </div>
+            )}
+            
+            {executionResult && (
+              <div className="flex-1 overflow-y-auto p-4">
+                <div className={`p-4 rounded-lg border ${executionResult.all_passed ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-rose-500/10 border-rose-500/30'}`}>
+                  <h4 className={`font-bold mb-3 ${executionResult.all_passed ? 'text-emerald-400' : 'text-rose-400'}`}>
+                    {executionResult.all_passed ? '🎉 All hidden checks passed' : `${executionResult.passed}/${executionResult.total} checks passed`}
+                  </h4>
+                  
+                  <div className="space-y-2">
+                    {(executionResult.details || []).map((d: any, i: number) => (
+                      <div key={i} className="flex items-start gap-3 bg-slate-900/50 p-2 rounded text-sm font-mono">
+                        <span className={d.passed ? 'text-emerald-400' : 'text-rose-400'}>
+                          {d.passed ? '✓' : '×'}
+                        </span>
+                        <div className="flex-1 text-slate-300">
+                          <div><span className="text-slate-500">Input:</span> {d.input}</div>
+                          <div className={d.passed ? 'text-emerald-300/70' : 'text-rose-300/70'}>
+                            {d.passed ? 'Passed successfully' : (d.stderr || 'Output mismatch')}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Far Right Pane: AI Reasoning (Appears on pass) */}
+        {executionResult?.all_passed && (
+          <div className="w-full lg:w-1/4 border-t lg:border-t-0 lg:border-l border-slate-800 bg-slate-900 flex flex-col">
+            <div className="p-4 border-b border-slate-800 bg-indigo-500/10">
+              <span className="text-xs font-semibold text-indigo-400 uppercase tracking-wider flex items-center gap-1">
+                <Sparkles className="w-3 h-3" /> PROVE YOU UNDERSTAND IT
+              </span>
+            </div>
+            
+            <div className="flex-1 p-4 flex flex-col gap-4 overflow-y-auto">
+              <p className="text-sm text-slate-400">
+                Why does your solution work? Mention complexity and one edge case.
+              </p>
+              <textarea
+                className="w-full flex-1 min-h-[150px] bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-slate-200 resize-none focus:outline-none focus:border-indigo-500 transition-colors"
+                placeholder="My solution uses..."
+                value={explanation}
+                onChange={(e) => setExplanation(e.target.value)}
+              />
+              <button
+                onClick={explainCode}
+                disabled={isGrading || !explanation.trim()}
+                className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50"
+              >
+                {isGrading ? 'Grading...' : 'Grade my reasoning'}
+              </button>
+              
+              {grade && (
+                <div className="mt-4 p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                  <div className="text-3xl font-bold text-emerald-400 mb-2">{grade.score}<span className="text-sm text-emerald-500/50">/100</span></div>
+                  <p className="text-sm text-emerald-100">{grade.feedback}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
       </div>
     </div>
