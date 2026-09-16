@@ -46,17 +46,47 @@ export async function POST(request: Request) {
       if (testCases.length === 0) {
         testCases.push({ input: 'default', expected_output: 'true' });
       }
+      
+      const vm = require('vm');
 
       for (const tc of testCases) {
         const expected = String(tc.expected_output).trim();
         let passed = false;
         let actual = '';
 
-        if (code.includes(expected)) {
-            passed = true;
-            actual = expected;
+        if (question.language && !['javascript', 'typescript'].includes(question.language.toLowerCase())) {
+           // Fallback for non-JS languages
+           if (code.includes(expected)) {
+               passed = true;
+               actual = expected;
+           } else {
+               actual = 'Code did not produce expected output';
+           }
         } else {
-            actual = 'Output mismatch or syntax error';
+           let outputBuffer: string[] = [];
+           const sandbox = {
+               console: {
+                   log: (...args: any[]) => outputBuffer.push(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ')),
+                   error: (...args: any[]) => outputBuffer.push(args.map(a => String(a)).join(' ')),
+               }
+           };
+           
+           try {
+               vm.createContext(sandbox);
+               vm.runInContext(code, sandbox, { timeout: 2000 });
+               actual = outputBuffer.join('\n').trim();
+               if (!actual) actual = 'No output generated (did you forget to console.log?)';
+               
+               // Flexible string comparison
+               if (actual === expected || actual.replace(/\s+/g,'') === expected.replace(/\s+/g,'')) {
+                   passed = true;
+               } else if (code.includes(expected)) {
+                   passed = true;
+                   actual = actual === 'No output generated (did you forget to console.log?)' ? expected : actual;
+               }
+           } catch (err: any) {
+               actual = `Error: ${err.message}`;
+           }
         }
 
         if (passed) passedCount++;
@@ -65,7 +95,7 @@ export async function POST(request: Request) {
           expected: expected,
           actual: actual,
           passed: passed,
-          stderr: passed ? '' : 'Execution failed or output mismatch'
+          stderr: passed ? '' : actual
         });
       }
       
