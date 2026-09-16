@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Loader2, Bot } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -10,7 +11,6 @@ export function GenerateAssessmentButton({ language, focus }: { language?: strin
   const [progress, setProgress] = useState(0);
   const router = useRouter();
 
-  // Fake progress animation for better UX
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isGenerating) {
@@ -47,7 +47,6 @@ export function GenerateAssessmentButton({ language, focus }: { language?: strin
 
       setProgress(100);
       toast.success('New challenge generated! It has appeared below.');
-      // Brief pause so the user sees 100%, then refresh the Next.js router to fetch fresh server data smoothly
       setTimeout(() => {
         router.refresh();
       }, 600);
@@ -60,10 +59,12 @@ export function GenerateAssessmentButton({ language, focus }: { language?: strin
 
   return (
     <div className="w-full max-w-sm mt-4">
-      <button
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.97 }}
         onClick={handleGenerate}
         disabled={isGenerating}
-        className="w-full px-4 py-2.5 bg-gradient-to-r from-violet-500 to-cyan-400 hover:brightness-110 text-white rounded-md text-sm font-medium flex items-center justify-center gap-2 transition-all shadow-md shadow-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="glow-button w-full px-4 py-2.5 bg-gradient-to-r from-violet-500 to-cyan-400 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isGenerating ? (
           <Loader2 className="w-4 h-4 animate-spin" />
@@ -71,30 +72,39 @@ export function GenerateAssessmentButton({ language, focus }: { language?: strin
           <Sparkles className="w-4 h-4" />
         )}
         {isGenerating ? 'AI is generating...' : 'Generate New Custom Challenge'}
-      </button>
+      </motion.button>
 
-      {isGenerating && (
-        <div className="mt-3 bg-slate-900 rounded-lg p-3 border border-indigo-500/30">
-          <div className="flex justify-between text-xs mb-1.5">
-            <span className="text-violet-300 font-medium flex items-center gap-1">
-              <Bot className="w-3 h-3" /> AI Engine
-            </span>
-            <span className="text-slate-400">{Math.min(progress, 100)}%</span>
-          </div>
-          <div className="w-full bg-white/[.05] rounded-full h-1.5 overflow-hidden">
-            <div 
-              className="bg-indigo-500 h-1.5 rounded-full transition-all duration-300 ease-out shadow-[0_0_10px_rgba(99,102,241,0.5)]" 
-              style={{ width: `${Math.min(progress, 100)}%` }}
-            ></div>
-          </div>
-          <p className="text-[10px] text-slate-500 mt-2 text-center">
-            {progress < 40 ? 'Analyzing your GitHub profile...' : 
-             progress < 70 ? 'Crafting personalized logic problem...' : 
-             progress < 100 ? 'Writing test cases...' :
-             'Done!'}
-          </p>
-        </div>
-      )}
+      <AnimatePresence>
+        {isGenerating && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mt-3 glass rounded-xl p-3 border border-violet-400/20 overflow-hidden"
+          >
+            <div className="flex justify-between text-xs mb-1.5">
+              <span className="text-violet-300 font-medium flex items-center gap-1">
+                <Bot className="w-3 h-3" /> AI Engine
+              </span>
+              <span className="text-slate-400">{Math.min(progress, 100)}%</span>
+            </div>
+            <div className="w-full bg-white/[.05] rounded-full h-1.5 overflow-hidden">
+              <motion.div
+                className="bg-gradient-to-r from-cyan-300 to-violet-400 h-1.5 rounded-full shadow-[0_0_10px_rgba(139,92,246,.5)]"
+                animate={{ width: `${Math.min(progress, 100)}%` }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+              />
+            </div>
+            <p className="text-[10px] text-slate-500 mt-2 text-center">
+              {progress < 40 ? 'Analyzing your GitHub profile...' :
+               progress < 70 ? 'Crafting personalized logic problem...' :
+               progress < 100 ? 'Writing test cases...' :
+               'Done!'}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

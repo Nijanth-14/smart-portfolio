@@ -1,4 +1,5 @@
-"use client";
+'use client';
+
 import { useCallback, useEffect, useId, useMemo, useRef } from 'react';
 import type { CSSProperties, ElementType } from 'react';
 import { gsap } from 'gsap';
