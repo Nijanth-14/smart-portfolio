@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 
 export default function LiveEditor({ question, initialCode }: { question: any, initialCode?: string }) {
   const router = useRouter();
-  const [code, setCode] = useState(initialCode || `// Write your ${question.language} solution here\n\n`);
+  const [code, setCode] = useState(initialCode || `// Write your ${question.language} solution here\n// IMPORTANT: You must console.log() your final result at the bottom of the script!\n// Example: console.log(myFunction([1,2,3]));\n\n`);
   const [output, setOutput] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [status, setStatus] = useState<'pending' | 'passed' | 'failed'>('pending');
