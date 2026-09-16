@@ -10,9 +10,6 @@ export const dynamic = 'force-dynamic';
 export default async function AssessmentsDashboard() {
   const supabase = await createClient();
 
-  // Fetch all questions dynamically
-  const { data: questions } = await supabase.from('questions').select('*').order('created_at', { ascending: false });
-  
   // Try fetching user assessments and profile if logged in
   const { data: { user } } = await supabase.auth.getUser();
   let userAssessments: any[] = [];
@@ -31,6 +28,10 @@ export default async function AssessmentsDashboard() {
       topLanguage = stats.top_languages[0];
     }
   }
+
+  // Fetch all questions dynamically, but only keep the ones the user has an assessment for (i.e. they generated it)
+  const { data: allQuestions } = await supabase.from('questions').select('*').order('created_at', { ascending: false });
+  const questions = (allQuestions || []).filter(q => userAssessments.some(a => a.question_id === q.id));
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 selection:bg-indigo-500/30 p-10 pt-24">

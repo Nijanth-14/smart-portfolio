@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     `;
 
     const mockResponse = {
-      title: "Two Sum with a Twist",
+      title: `Two Sum with a Twist (${Math.floor(Math.random() * 10000)})`,
       description: "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. Additionally, ensure your solution handles duplicate values correctly and efficiently.",
       testCases: [
         { input: "[2,7,11,15], 9", expected_output: "[0,1]" },
@@ -76,6 +76,19 @@ export async function POST(request: Request) {
     if (error) {
       console.error('Database Error:', error);
       return NextResponse.json({ error: 'Failed to save question to database: ' + error.message }, { status: 500 });
+    }
+
+    // Link the new question to the user immediately by creating a pending assessment
+    const { error: assessmentError } = await supabaseAdmin.from('assessments').insert({
+      user_id: user.id,
+      question_id: newQuestion.id,
+      status: 'pending',
+      code: ''
+    });
+
+    if (assessmentError) {
+      console.error('Assessment Link Error:', assessmentError);
+      // We still return the question so they can navigate, even if linking fails (though it shouldn't)
     }
 
     return NextResponse.json({ question: newQuestion });
