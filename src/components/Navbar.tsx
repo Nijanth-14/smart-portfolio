@@ -1,11 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
-import { LogIn, LogOut, Code2, Swords, ChevronRight } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { LogIn, LogOut, Code2, Swords, ChevronRight, Sparkles } from 'lucide-react';
 
 export default function Navbar() {
   const [user, setUser] = useState<any>(null);
@@ -16,221 +15,68 @@ export default function Navbar() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user);
-      if (data.user) {
-        fetch('/api/github/sync', { method: 'POST' }).catch(console.error);
-      }
+      if (data.user) fetch('/api/github/sync', { method: 'POST' }).catch(console.error);
     });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user || null);
-      if (session?.user && _event === 'SIGNED_IN') {
-        fetch('/api/github/sync', { method: 'POST' }).catch(console.error);
-      }
+      if (session?.user && event === 'SIGNED_IN') fetch('/api/github/sync', { method: 'POST' }).catch(console.error);
     });
-
     return () => subscription.unsubscribe();
   }, [supabase.auth]);
 
-  // Track scroll for navbar elevation effect
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const handleLogin = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'github',
-      options: {
-        redirectTo: `${location.origin}/auth/callback`,
-      }
-    });
+    await supabase.auth.signInWithOAuth({ provider: 'github', options: { redirectTo: `${location.origin}/auth/callback` } });
   };
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push('/');
-  };
+  const handleLogout = async () => { await supabase.auth.signOut(); router.push('/'); };
 
   return (
-    <>
-      <style jsx>{`
-        @keyframes navSlideDown {
-          from { transform: translateY(-100%); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
-        }
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
-        @keyframes iconBounceFlip {
-          0%   { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 4px rgba(34,197,94,0.3)); }
-          15%  { transform: scale(1.25) rotate(-12deg); filter: drop-shadow(0 0 10px rgba(34,197,94,0.6)); }
-          30%  { transform: scale(0.9) rotate(8deg); filter: drop-shadow(0 0 14px rgba(34,197,94,0.8)); }
-          45%  { transform: scale(1.15) rotate(-5deg); filter: drop-shadow(0 0 18px rgba(74,222,128,0.9)); }
-          60%  { transform: scale(1.05) rotate(3deg); filter: drop-shadow(0 0 12px rgba(34,197,94,0.7)); }
-          75%  { transform: scale(1.1) rotate(-1deg); filter: drop-shadow(0 0 8px rgba(34,197,94,0.5)); }
-          100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 4px rgba(34,197,94,0.3)); }
-        }
-        .skillforge-nav {
-          font-family: 'Fredoka One', cursive;
-        }
-        .nav-enter {
-          animation: navSlideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .logo-icon {
-          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-          cursor: pointer;
-        }
-        .logo-icon:hover {
-          animation: iconBounceFlip 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .nav-link {
-          position: relative;
-          transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        .nav-link::after {
-          content: '';
-          position: absolute;
-          bottom: -2px;
-          left: 50%;
-          width: 0;
-          height: 2px;
-          background: linear-gradient(90deg, #22c55e, #4ade80);
-          border-radius: 1px;
-          transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-          transform: translateX(-50%);
-        }
-        .nav-link:hover::after {
-          width: 100%;
-        }
-        .nav-link:hover {
-          color: #86efac;
-        }
-        .profile-pill {
-          transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        .profile-pill:hover {
-          background: rgba(34, 197, 94, 0.15);
-          border-color: rgba(34, 197, 94, 0.4);
-          box-shadow: 0 0 20px rgba(34, 197, 94, 0.1), inset 0 0 20px rgba(34, 197, 94, 0.05);
-          transform: translateY(-1px);
-        }
-        .profile-pill:active {
-          transform: translateY(0) scale(0.98);
-        }
-        .login-btn {
-          background: linear-gradient(135deg, #16a34a, #22c55e, #4ade80);
-          background-size: 200% 200%;
-          transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        .login-btn:hover {
-          background-position: 100% 100%;
-          box-shadow: 0 4px 25px rgba(34, 197, 94, 0.4), 0 0 40px rgba(34, 197, 94, 0.15);
-          transform: translateY(-1px);
-        }
-        .login-btn:active {
-          transform: translateY(0) scale(0.97);
-        }
-        .logout-btn {
-          transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        .logout-btn:hover {
-          color: #f87171;
-          background: rgba(248, 113, 113, 0.1);
-        }
-        .avatar-ring {
-          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .profile-pill:hover .avatar-ring {
-          box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.6);
-        }
-        .chevron-icon {
-          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .profile-pill:hover .chevron-icon {
-          transform: translateX(2px);
-        }
-      `}</style>
+    <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? 'py-3' : 'py-5'}`}>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className={`glass rounded-2xl px-4 h-14 flex items-center justify-between ${scrolled ? 'shadow-2xl' : ''}`}>
+          <Link href="/" className="group flex items-center gap-2.5">
+            <span className="relative grid place-items-center w-9 h-9 rounded-xl bg-white/[.06] border border-white/10 overflow-hidden">
+              <span className="absolute inset-0 bg-gradient-to-br from-cyan-400/25 via-violet-500/20 to-fuchsia-500/25 opacity-70 group-hover:opacity-100 transition" />
+              <Code2 className="relative w-5 h-5 text-cyan-300 group-hover:rotate-12 transition-transform duration-500" />
+            </span>
+            <span className="font-black tracking-tight text-lg text-electric">SkillForge</span>
+          </Link>
 
-      <nav
-        className={`skillforge-nav nav-enter sticky top-0 z-50 transition-all duration-500 ease-out ${
-          scrolled
-            ? 'bg-[#0a0f0a]/75 border-b border-green-900/30 shadow-[0_4px_30px_rgba(0,0,0,0.3)]'
-            : 'bg-[#0a0f0a]/50 border-b border-white/[0.04]'
-        }`}
-        style={{ backdropFilter: 'blur(20px) saturate(1.8)' }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Left: Logo + Nav Links */}
-            <div className="flex items-center gap-7">
-              <Link href="/" className="flex items-center gap-2.5 group">
-                <div className="logo-icon relative">
-                  <Code2 className="w-7 h-7 text-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
-                </div>
-                <span className="text-xl tracking-tight bg-gradient-to-r from-green-400 via-emerald-300 to-green-500 bg-clip-text text-transparent">
-                  SkillForge
-                </span>
+          {user && (
+            <div className="hidden sm:flex items-center gap-2">
+              <Link href="/assessments" className="px-4 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/[.06] transition flex items-center gap-2">
+                <Swords className="w-4 h-4 text-violet-300" /> Assessments
               </Link>
-              
-              {user && (
-                <Link href="/assessments" className="nav-link text-sm font-medium text-green-200/60 flex items-center gap-1.5">
-                  <Swords className="w-3.5 h-3.5" />
-                  Assessments
+            </div>
+          )}
+
+          <div className="flex items-center gap-2">
+            {user ? (
+              <>
+                <Link href={`/portfolio/${user.id}`} className="group flex items-center gap-2.5 rounded-xl px-2.5 py-1.5 border border-white/[.07] bg-white/[.025] hover:bg-white/[.07] transition">
+                  {user.user_metadata?.avatar_url
+                    ? <img src={user.user_metadata.avatar_url} alt="" className="w-7 h-7 rounded-lg ring-1 ring-cyan-300/30" />
+                    : <span className="w-7 h-7 rounded-lg grid place-items-center bg-cyan-400/10 text-cyan-300 text-xs font-bold">{(user.user_metadata?.preferred_username || 'D')[0].toUpperCase()}</span>}
+                  <span className="hidden md:block text-sm font-semibold text-slate-200">{user.user_metadata?.preferred_username || user.user_metadata?.user_name || 'Developer'}</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-300 group-hover:translate-x-0.5 transition" />
                 </Link>
-              )}
-            </div>
-
-            {/* Right: Profile or Login */}
-            <div className="flex items-center gap-3">
-              {user ? (
-                <>
-                  {/* Single unified profile pill — avatar + name + link */}
-                  <Link
-                    href={`/portfolio/${user.id}`}
-                    className="profile-pill flex items-center gap-2.5 px-3 py-1.5 rounded-full border border-white/[0.06] bg-white/[0.03]"
-                  >
-                    {user.user_metadata?.avatar_url ? (
-                      <img 
-                        src={user.user_metadata.avatar_url} 
-                        alt="Avatar" 
-                        className="avatar-ring w-7 h-7 rounded-full ring-1 ring-green-500/30"
-                      />
-                    ) : (
-                      <div className="avatar-ring w-7 h-7 rounded-full bg-green-500/20 flex items-center justify-center ring-1 ring-green-500/30">
-                        <span className="text-xs font-bold text-green-400">
-                          {(user.user_metadata?.preferred_username || 'D')[0].toUpperCase()}
-                        </span>
-                      </div>
-                    )}
-                    <span className="text-sm font-medium text-green-100/80">
-                      {user.user_metadata?.preferred_username || user.user_metadata?.user_name || 'Developer'}
-                    </span>
-                    <ChevronRight className="chevron-icon w-3.5 h-3.5 text-green-500/40" />
-                  </Link>
-
-                  {/* Logout */}
-                  <button
-                    onClick={handleLogout}
-                    className="logout-btn flex items-center gap-1.5 text-sm font-medium text-green-200/40 px-3 py-2 rounded-lg"
-                  >
-                    <LogOut className="w-4 h-4" />
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={handleLogin}
-                  className="login-btn flex items-center gap-2 text-white px-5 py-2 rounded-full text-sm font-semibold shadow-lg"
-                >
-                  <LogIn className="w-4 h-4" /> Login with GitHub
+                <button onClick={handleLogout} aria-label="Log out" className="w-10 h-10 grid place-items-center rounded-xl text-slate-500 hover:text-pink-300 hover:bg-pink-400/10 transition">
+                  <LogOut className="w-4 h-4" />
                 </button>
-              )}
-            </div>
+              </>
+            ) : (
+              <button onClick={handleLogin} className="glow-button rounded-xl px-4 py-2.5 text-sm font-bold text-slate-950 bg-gradient-to-r from-cyan-300 via-white to-violet-300 flex items-center gap-2">
+                <Sparkles className="w-4 h-4" /> <span className="hidden sm:inline">Continue with GitHub</span><span className="sm:hidden">Login</span>
+              </button>
+            )}
           </div>
         </div>
-      </nav>
-    </>
+      </div>
+    </nav>
   );
 }

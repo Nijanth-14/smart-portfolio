@@ -49,117 +49,85 @@ export default async function AssessmentsDashboard({ searchParams }: { searchPar
   );
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 selection:bg-indigo-500/30 p-10 pt-24">
-      <div className="max-w-5xl mx-auto">
-        
-        <div className="mb-8">
-          <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 mb-3">
-            Live Coding Assessments
-          </h1>
-          <p className="text-slate-400 text-lg">
-            Prove your skills by completing these challenges.
-          </p>
-        </div>
+    <div className="relative min-h-screen overflow-hidden pt-24 pb-20">
+      <div className="app-grid absolute inset-0" /><div className="noise" />
+      <div className="orb w-[28rem] h-[28rem] bg-violet-500/10 -top-20 -right-32" />
+      <div className="orb w-[24rem] h-[24rem] bg-cyan-400/8 top-1/2 -left-32" style={{animationDelay:'-4s'}} />
+      <main className="relative z-10 max-w-6xl mx-auto px-5 sm:px-6">
+        <header className="reveal-up py-12">
+          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.22em] text-violet-300">
+            <span className="w-2 h-2 rounded-full bg-violet-300 shadow-[0_0_14px_rgba(139,92,246,.9)]" /> Skill arena
+          </div>
+          <h1 className="mt-4 text-5xl sm:text-6xl font-black tracking-[-.04em] text-electric">Live Coding Assessments</h1>
+          <p className="mt-4 text-slate-400 text-lg max-w-2xl">Challenges generated from the skills you actually use. Ship a solution, get evaluated, build proof.</p>
+        </header>
 
-        <div className="mb-8 p-5 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl flex items-start gap-4">
-          <div className="p-3 bg-indigo-500/20 rounded-full mt-1">
-            <Sparkles className="w-6 h-6 text-indigo-400" />
+        <section className="gradient-border glass rounded-3xl p-6 sm:p-8 mb-10 card-lift reveal-up" style={{animationDelay:'.08s'}}>
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-7">
+            <div className="flex gap-5">
+              <div className="shrink-0 w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-400/20 to-cyan-400/10 border border-violet-300/20 grid place-items-center">
+                <Sparkles className="w-6 h-6 text-violet-300" />
+              </div>
+              <div>
+                <div className="text-xs uppercase tracking-[.2em] font-bold text-violet-300">AI personalized</div>
+                <h2 className="text-2xl font-black text-white mt-1">A challenge built around <span className="text-cyan-300">{topLanguage}</span>.</h2>
+                <p className="text-slate-400 mt-2 max-w-2xl leading-6">Your GitHub signals are used to tailor the language and problem shape. No generic quiz bank.</p>
+                {user && <GenerateAssessmentButton language={topLanguage} focus={focus} />}
+              </div>
+            </div>
+            <div className="hidden lg:block text-right">
+              <div className="text-4xl font-black text-white">{questions.length}</div>
+              <div className="text-xs uppercase tracking-widest text-slate-500">challenges</div>
+            </div>
           </div>
-          <div className="w-full">
-            <h3 className="text-xl font-bold text-white mb-2">AI-Personalized Skill Match</h3>
-            <p className="text-slate-400 leading-relaxed">
-              We analyzed your GitHub profile and noticed your primary expertise is in <strong className="text-indigo-300">{topLanguage}</strong>. 
-              Our AI model can dynamically generate LeetCode-style challenges to accurately evaluate your strongest skill sets.
-            </p>
-            {user && (
-              <GenerateAssessmentButton language={topLanguage} focus={focus} />
-            )}
-          </div>
-        </div>
+        </section>
 
         {questions.length > 0 && (
-          <div className="mb-4 flex items-center gap-2">
-            <h2 className="text-lg font-semibold text-white">Your Generated Challenges</h2>
-            <span className="px-2 py-0.5 bg-indigo-500/20 text-indigo-300 rounded-full text-xs font-bold">{questions.length}</span>
+          <div className="flex items-center gap-3 mb-5">
+            <h2 className="text-xl font-black text-white">Your generated challenges</h2>
+            <span className="px-2.5 py-1 rounded-full bg-white/[.06] border border-white/10 text-xs font-bold text-cyan-300">{questions.length}</span>
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {questions.map((q) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {questions.map((q, index) => {
             const assessment = userAssessments.find(a => a.question_id === q.id);
             const status = assessment?.status || 'pending';
             const timeSpent = assessment?.time_spent || 0;
-
+            const statusStyle = status === 'passed'
+              ? 'text-lime-300 bg-lime-300/10 border-lime-300/20'
+              : status === 'failed' ? 'text-pink-300 bg-pink-300/10 border-pink-300/20' : 'text-slate-400 bg-white/[.04] border-white/10';
             return (
-              <Link 
-                href={`/assessments/${q.id}`} 
-                key={q.id}
-                className="group relative overflow-hidden bg-slate-900/50 backdrop-blur-md border rounded-2xl p-6 shadow-xl transition-all block border-slate-700/50 hover:border-indigo-500/50 hover:shadow-2xl"
-              >
-                <div className="absolute top-0 right-0 w-32 h-32 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-150 bg-indigo-500/5"></div>
-                
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-indigo-500/20 text-indigo-400">
-                      <Terminal className="w-5 h-5" />
-                    </div>
-                    <h2 className="text-lg font-semibold text-white leading-tight">{q.title}</h2>
+              <Link href={`/assessments/${q.id}`} key={q.id} className="group relative overflow-hidden gradient-border glass rounded-3xl p-6 card-lift reveal-up" style={{animationDelay:`${.1 + index*.05}s`}}>
+                <div className="absolute -right-16 -top-16 w-40 h-40 rounded-full bg-violet-500/10 blur-2xl group-hover:bg-cyan-400/10 transition-colors duration-700" />
+                <div className="relative">
+                  <div className="flex justify-between gap-3 items-start">
+                    <div className="w-11 h-11 rounded-2xl bg-violet-400/10 border border-violet-300/15 grid place-items-center text-violet-300"><Terminal className="w-5 h-5" /></div>
+                    <span className={`px-3 py-1.5 rounded-full border text-[10px] font-black tracking-widest ${statusStyle}`}>
+                      {status === 'passed' ? '✓ PASSED' : status === 'failed' ? '× FAILED' : '○ PENDING'}
+                    </span>
                   </div>
-                  
-                  {status === 'passed' ? (
-                    <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-bold flex items-center gap-1 shrink-0">
-                      <CheckCircle className="w-3 h-3" /> PASSED
-                    </span>
-                  ) : status === 'failed' ? (
-                    <span className="px-3 py-1 bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-full text-xs font-bold flex items-center gap-1 shrink-0">
-                      <XCircle className="w-3 h-3" /> FAILED
-                    </span>
-                  ) : (
-                    <span className="px-3 py-1 bg-slate-800 text-slate-400 border border-slate-700 rounded-full text-xs font-bold flex items-center gap-1 shrink-0">
-                      <Clock className="w-3 h-3" /> PENDING
-                    </span>
-                  )}
+                  <h2 className="mt-6 text-xl font-black text-white group-hover:text-cyan-200 transition-colors">{q.title}</h2>
+                  <p className="mt-2 text-sm leading-6 text-slate-500 line-clamp-2 min-h-12">{q.description}</p>
+                  <div className="mt-6 flex items-center justify-between">
+                    <span className="px-3 py-1.5 rounded-lg bg-white/[.045] border border-white/10 text-[10px] font-black uppercase tracking-widest text-slate-300">{q.language}</span>
+                    <span className="text-xs text-slate-500 flex items-center gap-2">{timeSpent > 0 && <><Timer className="w-3.5 h-3.5" />{formatDuration(timeSpent)}</>} <Sparkles className="w-3.5 h-3.5 text-violet-300" /> AI generated</span>
+                  </div>
+                  {status === 'passed' && assessment?.id && <div className="mt-5" onClick={(e) => e.stopPropagation()}><ClaimCredentialButton assessmentId={assessment.id} /></div>}
                 </div>
-
-                <p className="text-slate-400 text-sm line-clamp-2 mb-4">
-                  {q.description}
-                </p>
-
-                <div className="flex items-center justify-between">
-                  <span className="px-3 py-1 bg-slate-800/80 border border-slate-700 text-slate-300 rounded-md text-xs font-medium uppercase tracking-wider">
-                    {q.language}
-                  </span>
-                  
-                  <div className="flex items-center gap-3">
-                    {timeSpent > 0 && (
-                      <span className="text-xs text-slate-500 flex items-center gap-1">
-                        <Timer className="w-3 h-3" /> {formatDuration(timeSpent)}
-                      </span>
-                    )}
-                    <span className="text-xs font-medium text-slate-500 flex items-center gap-1">
-                      <Sparkles className="w-3 h-3" /> AI Generated
-                    </span>
-                  </div>
-                </div>
-                
-                {status === 'passed' && assessment?.id && (
-                  <div className="mt-6" onClick={(e) => e.stopPropagation()}>
-                    <ClaimCredentialButton assessmentId={assessment.id} />
-                  </div>
-                )}
               </Link>
             );
           })}
         </div>
 
         {questions.length === 0 && (
-          <div className="text-center py-20 text-slate-500 bg-slate-900/30 rounded-2xl border border-slate-800 border-dashed">
-            <Terminal className="w-10 h-10 mx-auto mb-3 text-slate-600" />
-            <p className="text-lg font-medium text-slate-400 mb-1">No challenges yet</p>
-            <p className="text-sm">Click &quot;Generate New Custom Challenge&quot; above to get started.</p>
+          <div className="gradient-border glass rounded-3xl py-24 text-center reveal-up">
+            <Terminal className="w-10 h-10 mx-auto mb-4 text-slate-600" />
+            <p className="text-xl font-black text-slate-300">Your arena is empty.</p>
+            <p className="text-sm text-slate-500 mt-2">Generate a personalized challenge above to get started.</p>
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 }

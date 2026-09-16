@@ -63,7 +63,7 @@ export function GenerateAssessmentButton({ language, focus }: { language?: strin
       <button
         onClick={handleGenerate}
         disabled={isGenerating}
-        className="w-full px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md text-sm font-medium flex items-center justify-center gap-2 transition-all shadow-md shadow-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full px-4 py-2.5 bg-gradient-to-r from-violet-500 to-cyan-400 hover:brightness-110 text-white rounded-md text-sm font-medium flex items-center justify-center gap-2 transition-all shadow-md shadow-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isGenerating ? (
           <Loader2 className="w-4 h-4 animate-spin" />
@@ -76,12 +76,12 @@ export function GenerateAssessmentButton({ language, focus }: { language?: strin
       {isGenerating && (
         <div className="mt-3 bg-slate-900 rounded-lg p-3 border border-indigo-500/30">
           <div className="flex justify-between text-xs mb-1.5">
-            <span className="text-indigo-400 font-medium flex items-center gap-1">
+            <span className="text-violet-300 font-medium flex items-center gap-1">
               <Bot className="w-3 h-3" /> AI Engine
             </span>
             <span className="text-slate-400">{Math.min(progress, 100)}%</span>
           </div>
-          <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+          <div className="w-full bg-white/[.05] rounded-full h-1.5 overflow-hidden">
             <div 
               className="bg-indigo-500 h-1.5 rounded-full transition-all duration-300 ease-out shadow-[0_0_10px_rgba(99,102,241,0.5)]" 
               style={{ width: `${Math.min(progress, 100)}%` }}

@@ -53,10 +53,10 @@ export default function WeeklyFocus() {
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-lg">
+    <div className="gradient-border glass rounded-3xl p-6 card-lift">
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2 bg-indigo-500/10 rounded-lg">
-          <Target className="w-6 h-6 text-indigo-400" />
+          <Target className="w-6 h-6 text-violet-300" />
         </div>
         <div>
           <h2 className="text-xl font-bold text-white">Weekly Improvement Focus</h2>
@@ -65,7 +65,7 @@ export default function WeeklyFocus() {
       </div>
 
       {!isConnected ? (
-        <div className="flex flex-col items-center justify-center py-8 text-center border-2 border-dashed border-slate-800 rounded-lg bg-slate-900/50">
+        <div className="flex flex-col items-center justify-center py-8 text-center border-2 border-dashed border-white/10 rounded-lg bg-white/[.02]">
           <div className="flex gap-4 mb-4">
             <Code className="w-8 h-8 text-slate-500" />
             <FileText className="w-8 h-8 text-slate-500" />
@@ -74,7 +74,7 @@ export default function WeeklyFocus() {
           <button 
             onClick={handleConnect}
             disabled={isAnalyzing}
-            className="px-6 py-2.5 bg-red-600 hover:bg-red-500 disabled:bg-red-900/50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors shadow-lg shadow-red-500/20 flex items-center gap-2"
+            className="px-6 py-2.5 bg-gradient-to-r from-pink-500 to-violet-500 hover:brightness-110 disabled:bg-red-900/50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors shadow-lg shadow-red-500/20 flex items-center gap-2"
           >
             {isAnalyzing ? (
               <span className="flex items-center gap-2">Analyzing Profile... <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span></span>
@@ -86,21 +86,21 @@ export default function WeeklyFocus() {
       ) : (
         focusArea && (
           <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
+            <div className="glass rounded-2xl border border-white/10 p-4">
               <h3 className="text-sm font-semibold text-rose-400 mb-1 uppercase tracking-wider">Identified Weakness</h3>
               <p className="text-white font-medium text-lg">{focusArea.weakness}</p>
             </div>
             
-            <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
+            <div className="glass rounded-2xl border border-white/10 p-4">
               <h3 className="text-sm font-semibold text-slate-400 mb-1 uppercase tracking-wider">Evidence from GitHub</h3>
               <p className="text-slate-300">{focusArea.evidence}</p>
             </div>
 
             <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-lg p-4">
-              <h3 className="text-sm font-semibold text-indigo-400 mb-1 uppercase tracking-wider">Action Plan</h3>
+              <h3 className="text-sm font-semibold text-violet-300 mb-1 uppercase tracking-wider">Action Plan</h3>
               <p className="text-indigo-100 mb-4">{focusArea.action}</p>
               
-              <Link href="/assessments" className="flex items-center gap-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-md transition-colors w-full justify-center">
+              <Link href="/assessments" className="flex items-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-violet-500 to-cyan-400 hover:brightness-110 px-4 py-2 rounded-md transition-colors w-full justify-center">
                 Start 20-Min Exercise <ArrowRight className="w-4 h-4" />
               </Link>
             </div>

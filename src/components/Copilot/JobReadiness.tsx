@@ -81,10 +81,10 @@ export default function JobReadiness() {
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-lg">
+    <div className="gradient-border glass rounded-3xl p-6 card-lift">
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2 bg-teal-500/10 rounded-lg">
-          <Briefcase className="w-6 h-6 text-teal-400" />
+          <Briefcase className="w-6 h-6 text-cyan-300" />
         </div>
         <div>
           <h2 className="text-xl font-bold text-white">Job Readiness Checker</h2>
@@ -98,7 +98,7 @@ export default function JobReadiness() {
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             placeholder="Paste Job Description here..."
-            className="w-full h-32 bg-slate-800/50 border border-slate-700 rounded-lg p-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500/50 resize-none"
+            className="w-full h-32 glass rounded-2xl border border-white/10 p-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500/50 resize-none"
           />
           
           <div className="flex items-center justify-between">
@@ -113,7 +113,7 @@ export default function JobReadiness() {
               <button 
                 type="button"
                 disabled={isUploading || isChecking}
-                className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-300 text-sm font-medium rounded-lg transition-colors border border-slate-700"
+                className="flex items-center gap-2 px-4 py-2 bg-white/[.05] hover:bg-slate-700 disabled:opacity-50 text-slate-300 text-sm font-medium rounded-lg transition-colors border border-white/10"
               >
                 {isUploading ? <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-slate-300"></span> : <Upload className="w-4 h-4" />}
                 {isUploading ? 'Extracting text...' : 'Upload PDF'}
@@ -127,7 +127,7 @@ export default function JobReadiness() {
           <button 
             onClick={handleCheck}
             disabled={isChecking || !jobDescription.trim()}
-            className="w-full py-2 bg-teal-600 hover:bg-teal-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="w-full py-2 bg-gradient-to-r from-cyan-400 to-violet-500 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
           >
             {isChecking ? (
               <span className="flex items-center gap-2">Checking Evidence... <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span></span>
@@ -138,9 +138,9 @@ export default function JobReadiness() {
         </div>
       ) : (
         <div className="space-y-6 animate-in fade-in duration-500">
-          <div className="overflow-hidden border border-slate-700 rounded-lg bg-slate-800/30">
+          <div className="overflow-hidden border border-white/10 rounded-lg bg-white/[.025]">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-800/80 text-slate-300">
+              <thead className="bg-white/[.05]/80 text-slate-300">
                 <tr>
                   <th className="px-4 py-3 font-medium">Requirement</th>
                   <th className="px-4 py-3 font-medium">Your Evidence</th>
@@ -149,7 +149,7 @@ export default function JobReadiness() {
               </thead>
               <tbody className="divide-y divide-slate-700">
                 {readiness.map((item, idx) => (
-                  <tr key={idx} className="hover:bg-slate-800/50 transition-colors">
+                  <tr key={idx} className="hover:bg-white/[.05]/50 transition-colors">
                     <td className="px-4 py-3 font-medium text-white">{item.skill}</td>
                     <td className="px-4 py-3 text-slate-400">{item.evidence}</td>
                     <td className="px-4 py-3">
@@ -176,7 +176,7 @@ export default function JobReadiness() {
                    toast.success('You have strong evidence for everything! You are ready to apply.');
                 }
               }}
-              className="inline-flex items-center justify-center gap-2 px-6 py-2 bg-teal-600 hover:bg-teal-500 text-white font-medium rounded-lg transition-all shadow-[0_0_15px_rgba(20,184,166,0.3)] hover:shadow-[0_0_25px_rgba(20,184,166,0.5)]">
+              className="inline-flex items-center justify-center gap-2 px-6 py-2 bg-gradient-to-r from-cyan-400 to-violet-500 hover:brightness-110 text-white font-medium rounded-lg transition-all shadow-[0_0_15px_rgba(20,184,166,0.3)] hover:shadow-[0_0_25px_rgba(20,184,166,0.5)]">
               <Code2 className="w-4 h-4" /> Prepare for this Job
             </button>
           </div>
