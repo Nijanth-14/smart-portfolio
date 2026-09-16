@@ -18,7 +18,6 @@ export function GenerateAssessmentButton({ language, focus }: { language?: strin
       interval = setInterval(() => {
         setProgress(prev => {
           if (prev >= 90) return prev;
-          // Slowly increment up to 90%
           return prev + Math.floor(Math.random() * 10) + 2;
         });
       }, 500);
@@ -33,29 +32,25 @@ export function GenerateAssessmentButton({ language, focus }: { language?: strin
       setIsGenerating(true);
       const res = await fetch('/api/generate-assessment', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ language: language || 'JavaScript', focus })
       });
 
-      let data;
       if (!res.ok) {
+        let errMsg = 'Failed to generate assessment';
         try {
-          data = await res.json();
-        } catch(e) {
-          throw new Error('Server returned an invalid response. It might have timed out.');
-        }
-        throw new Error(data.error || 'Failed to generate assessment');
-      } else {
-        data = await res.json();
+          const data = await res.json();
+          errMsg = data.error || errMsg;
+        } catch {}
+        throw new Error(errMsg);
       }
 
       setProgress(100);
+      toast.success('New challenge generated! It has appeared below.');
+      // Brief pause so the user sees 100%, then refresh the server component
       setTimeout(() => {
-        router.push(`/assessments/${data.question.id}`);
-        toast.success('Successfully generated a new challenge!');
-      }, 500);
+        router.refresh();
+      }, 600);
     } catch (error: any) {
       toast.error(error.message || 'Failed to generate assessment. Please try again.');
     } finally {
@@ -79,23 +74,24 @@ export function GenerateAssessmentButton({ language, focus }: { language?: strin
       </button>
 
       {isGenerating && (
-        <div className="mt-3 bg-slate-900 rounded-lg p-3 border border-indigo-500/30 animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="mt-3 bg-slate-900 rounded-lg p-3 border border-indigo-500/30">
           <div className="flex justify-between text-xs mb-1.5">
             <span className="text-indigo-400 font-medium flex items-center gap-1">
               <Bot className="w-3 h-3" /> AI Engine
             </span>
-            <span className="text-slate-400">{progress}%</span>
+            <span className="text-slate-400">{Math.min(progress, 100)}%</span>
           </div>
           <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
             <div 
               className="bg-indigo-500 h-1.5 rounded-full transition-all duration-300 ease-out shadow-[0_0_10px_rgba(99,102,241,0.5)]" 
-              style={{ width: `${progress}%` }}
+              style={{ width: `${Math.min(progress, 100)}%` }}
             ></div>
           </div>
           <p className="text-[10px] text-slate-500 mt-2 text-center">
             {progress < 40 ? 'Analyzing your GitHub profile...' : 
              progress < 70 ? 'Crafting personalized logic problem...' : 
-             'Writing test cases...'}
+             progress < 100 ? 'Writing test cases...' :
+             'Done!'}
           </p>
         </div>
       )}

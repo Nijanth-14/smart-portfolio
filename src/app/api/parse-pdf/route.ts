@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-// @ts-ignore
-import PDFParser from 'pdf2json';
 
 export async function POST(request: Request) {
   try {
@@ -14,14 +12,18 @@ export async function POST(request: Request) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
+    // Lazy-load pdf2json to avoid Vercel bundler issues with native modules
+    const PDFParser = (await import('pdf2json')).default;
+
     const pdfText = await new Promise<string>((resolve, reject) => {
-      const pdfParser = new PDFParser(null, true); // true = text mode
+      // @ts-ignore - pdf2json types are inconsistent
+      const pdfParser = new PDFParser(null, true);
       
       pdfParser.on("pdfParser_dataError", (errData: any) => reject(errData.parserError));
-      pdfParser.on("pdfParser_dataReady", (pdfData: any) => {
+      pdfParser.on("pdfParser_dataReady", () => {
         try {
           resolve(decodeURIComponent(pdfParser.getRawTextContent()));
-        } catch (e) {
+        } catch {
           resolve(pdfParser.getRawTextContent());
         }
       });
@@ -32,6 +34,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ text: pdfText });
   } catch (error: any) {
     console.error('PDF Parse Error:', error);
-    return NextResponse.json({ error: 'Failed to parse PDF' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to parse PDF: ' + (error.message || 'Unknown error') }, { status: 500 });
   }
 }
