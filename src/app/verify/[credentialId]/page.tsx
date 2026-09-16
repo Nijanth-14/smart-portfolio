@@ -2,7 +2,7 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
 import { jwtVerify } from 'jose';
-import { CheckDecagram, ExternalLink, Code2, Calendar } from 'lucide-react';
+import { ExternalLink, Code2, Calendar } from 'lucide-react';
 import Link from 'next/link';
 
 // Using a custom verified icon since CheckDecagram might not be in older lucide-react versions
