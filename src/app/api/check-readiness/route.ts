@@ -40,7 +40,8 @@ export async function POST(request: Request) {
       Compare the following Job Description against the Candidate's GitHub Evidence.
       
       Job Description:
-      ${jobDescription}
+      ${jobDescription.substring(0, 4000)}
+      
       
       Candidate's Analyzed Profile:
       ${JSON.stringify(profile.analysis_data || {}, null, 2)}
