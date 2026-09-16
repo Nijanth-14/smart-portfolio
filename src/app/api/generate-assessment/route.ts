@@ -58,8 +58,15 @@ export async function POST(request: Request) {
     
     const parsedQuestion = JSON.parse(content);
     
-    // Insert into Supabase
-    const { data: newQuestion, error } = await supabase.from('questions').insert({
+    // Create an admin client to bypass RLS for inserting system-generated questions
+    const { createClient: createSupabaseClient } = require('@supabase/supabase-js');
+    const supabaseAdmin = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
+
+    // Insert into Supabase using admin client
+    const { data: newQuestion, error } = await supabaseAdmin.from('questions').insert({
       title: parsedQuestion.title,
       description: parsedQuestion.description,
       language: parsedQuestion.language.toLowerCase(),
@@ -68,7 +75,7 @@ export async function POST(request: Request) {
 
     if (error) {
       console.error('Database Error:', error);
-      return NextResponse.json({ error: 'Failed to save question' }, { status: 500 });
+      return NextResponse.json({ error: 'Failed to save question to database: ' + error.message }, { status: 500 });
     }
 
     return NextResponse.json({ question: newQuestion });
