@@ -9,8 +9,16 @@ export default async function AssessmentsDashboard({ searchParams }: { searchPar
   const currentCompany = company || 'general';
   const supabase = await createClient();
 
-  // Fetch all questions
-  const { data: questions } = await supabase.from('questions').select('*');
+  // Fetch questions dynamically based on the active company mode
+  let questionQuery = supabase.from('questions').select('*');
+  if (currentCompany === 'stripe') {
+    questionQuery = questionQuery.eq('id', 'q-stripe-1');
+  } else if (currentCompany === 'google') {
+    questionQuery = questionQuery.eq('id', 'q-google-1');
+  } else {
+    questionQuery = questionQuery.not('id', 'like', 'q-%');
+  }
+  const { data: questions } = await questionQuery;
   
   // Try fetching user assessments and profile if logged in
   const { data: { user } } = await supabase.auth.getUser();
