@@ -4,13 +4,15 @@ import { createClient } from '@/utils/supabase/server';
 import { Terminal, CheckCircle, Clock, Sparkles, Building2, Briefcase } from 'lucide-react';
 import { ClaimCredentialButton } from '@/components/ClaimCredentialButton';
 
+import { GenerateAssessmentButton } from '@/components/GenerateAssessmentButton';
+
 export default async function AssessmentsDashboard({ searchParams }: { searchParams: Promise<{ company?: string }> }) {
   const { company } = await searchParams;
   const currentCompany = company || 'general';
   const supabase = await createClient();
 
   // Fetch questions dynamically based on the active company mode
-  let questionQuery = supabase.from('questions').select('*');
+  let questionQuery = supabase.from('questions').select('*').order('created_at', { ascending: false });
   if (currentCompany === 'stripe') {
     questionQuery = questionQuery.eq('id', '11111111-1111-1111-1111-111111111111');
   } else if (currentCompany === 'google') {
@@ -81,12 +83,15 @@ export default async function AssessmentsDashboard({ searchParams }: { searchPar
             <div className="p-3 bg-indigo-500/20 rounded-full mt-1">
               <Sparkles className="w-6 h-6 text-indigo-400" />
             </div>
-            <div>
+            <div className="w-full">
               <h3 className="text-xl font-bold text-white mb-2">AI-Personalized Skill Match</h3>
               <p className="text-slate-400 leading-relaxed">
                 We analyzed your GitHub profile and noticed your primary expertise is in <strong className="text-indigo-300">{topLanguage}</strong>. 
                 Our AI model has dynamically selected the following LeetCode-style challenges to accurately evaluate your strongest skill sets.
               </p>
+              {user && (
+                <GenerateAssessmentButton language={topLanguage} />
+              )}
             </div>
           </div>
         ) : (
