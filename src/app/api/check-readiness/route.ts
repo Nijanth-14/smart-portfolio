@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
+import { GoogleGenAI } from '@google/genai';
 import { createClient } from '@/utils/supabase/server';
 import { generateContentWithFallback } from '@/utils/gemini';
+
+export const runtime = 'edge';
+export const maxDuration = 60;
 
 export async function POST(request: Request) {
   try {
@@ -32,7 +36,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Profile not found' }, { status: 400 });
     }
 
-    const { GoogleGenAI } = require('@google/genai');
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     
     const prompt = `
