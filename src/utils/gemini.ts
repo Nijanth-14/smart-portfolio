@@ -12,6 +12,7 @@ export async function generateContentWithFallback(ai: any, prompt: string, confi
   });
 
   const generationPromise = async () => {
+    const errorMessages = [];
     for (const model of MODELS_TO_TRY) {
       try {
         console.log(`Attempting generation with ${model}...`);
@@ -35,15 +36,13 @@ export async function generateContentWithFallback(ai: any, prompt: string, confi
         
         return JSON.parse(sanitizedContent);
       } catch (error: any) {
-        console.warn(`Model ${model} failed:`, error?.message || error);
-        
-        // DEBUG HACK: write error to file so we can see it
-        const fs = require('fs');
-        fs.appendFileSync('debug-gemini.txt', `Model ${model} failed: ${error?.message || error}\n`);
+        const msg = error?.message || error;
+        console.warn(`Model ${model} failed:`, msg);
+        errorMessages.push(`${model}: ${msg}`);
         
         if (model === MODELS_TO_TRY[MODELS_TO_TRY.length - 1]) {
           console.error("All models failed.");
-          throw new Error("All models failed");
+          throw new Error(`All models failed. Details: ${errorMessages.join(' | ')}`);
         }
       }
     }
