@@ -47,6 +47,8 @@ export function GenerateAssessmentButton({ language, focus }: { language?: strin
           throw new Error('Server returned an invalid response. It might have timed out.');
         }
         throw new Error(data.error || 'Failed to generate assessment');
+      } else {
+        data = await res.json();
       }
 
       setProgress(100);
