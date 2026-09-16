@@ -17,22 +17,29 @@ async function getPortfolioData(userId: string) {
     return null;
   }
 
-  const verifiedCredentials = [
-    {
-      id: 'cred-1',
-      title: 'AWS Certified Solutions Architect',
-      issuer: 'Amazon Web Services',
-      issued_at: '2023-05-12T00:00:00Z',
-      url: 'https://aws.amazon.com/certification/verified'
-    },
-    {
-      id: 'cred-2',
-      title: 'Stripe Certified Professional Developer',
-      issuer: 'Stripe',
-      issued_at: '2024-01-20T00:00:00Z',
-      url: 'https://stripe.com/docs/certification'
-    }
-  ];
+  const { data: credentialsData } = await supabase
+    .from('credentials')
+    .select(`
+      id,
+      issued_at,
+      assessments (
+        id,
+        status,
+        questions (
+          title
+        )
+      )
+    `)
+    .eq('user_id', userId)
+    .order('issued_at', { ascending: false });
+
+  const verifiedCredentials = (credentialsData || []).map((cred: any) => ({
+    id: cred.id,
+    title: cred.assessments?.questions?.title || 'Verified Skill Assessment',
+    issuer: 'SkillProof Authenticated',
+    issued_at: cred.issued_at,
+    url: `/verify/${cred.id}`
+  }));
 
   return { profile, verifiedCredentials };
 }
