@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { motion, useReducedMotion, type Variants } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 
 export const staggerContainerVariants: Variants = {
   hidden: {},
@@ -32,8 +32,6 @@ interface StaggerProps {
 
 /** Wrap a grid/list of cards; each direct StaggerItem child animates in sequence on scroll. */
 export function StaggerContainer({ children, className = '', once = true, amount = 0.1 }: StaggerProps) {
-  const prefersReduced = useReducedMotion();
-  if (prefersReduced) return <div className={className}>{children}</div>;
   return (
     <motion.div
       className={className}

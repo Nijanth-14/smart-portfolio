@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { motion, useReducedMotion, type Variants } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 
 type Direction = 'up' | 'down' | 'left' | 'right' | 'scale' | 'none';
 
@@ -42,16 +42,13 @@ export default function Reveal({
   amount = 0.2,
   as = 'div',
 }: RevealProps) {
-  const prefersReduced = useReducedMotion();
   const offset = offsets[direction];
-  const initial = prefersReduced
-    ? { opacity: 0 }
-    : {
-        opacity: 0,
-        x: offset.x !== undefined ? (distance ?? offset.x) : 0,
-        y: offset.y !== undefined ? (distance ?? offset.y) : 0,
-        scale: offset.scale ?? 1,
-      };
+  const initial = {
+    opacity: 0,
+    x: offset.x !== undefined ? (distance ?? offset.x) : 0,
+    y: offset.y !== undefined ? (distance ?? offset.y) : 0,
+    scale: offset.scale ?? 1,
+  };
 
   const variants: Variants = {
     hidden: initial,
@@ -61,7 +58,7 @@ export default function Reveal({
       y: 0,
       scale: 1,
       transition: {
-        duration: prefersReduced ? 0.2 : duration,
+        duration,
         delay,
         ease: [0.16, 1, 0.3, 1],
       },

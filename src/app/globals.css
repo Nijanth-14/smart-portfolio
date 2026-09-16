@@ -125,16 +125,15 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .shine-sweep:hover::after { transform:translateX(140%); }
 
 /* ---- Animated gradient border ring (conic spin) ---- */
-.ring-spin { position:relative; isolation:isolate; }
+.ring-spin { position:relative; isolation:isolate; overflow:hidden; }
 .ring-spin::before {
-  content:""; position:absolute; inset:-1px; border-radius:inherit; z-index:-1;
-  background:conic-gradient(from var(--angle,0deg), #00e5ff, #8b5cf6, #ff2bd6, #b8ff2c, #00e5ff);
-  animation: spinAngle 4s linear infinite;
+  content:""; position:absolute; top:-50%; left:-50%; width:200%; height:200%; z-index:-1;
+  background:conic-gradient(transparent, rgba(139, 92, 246, 0.2), transparent 30%);
+  animation: spinTransform 4s linear infinite;
   opacity:0; transition:opacity .4s;
 }
 .ring-spin:hover::before { opacity:1; }
-@property --angle { syntax:'<angle>'; initial-value:0deg; inherits:false; }
-@keyframes spinAngle { to { --angle:360deg; } }
+@keyframes spinTransform { to { transform: rotate(360deg); } }
 
 /* ---- Success burst (for claim / generate success states) ---- */
 .success-burst { position:relative; }
@@ -170,6 +169,3 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .marquee-track { display:flex; width:max-content; animation: marquee 22s linear infinite; }
 @keyframes marquee { from { transform:translateX(0); } to { transform:translateX(-50%); } }
 
-@media (prefers-reduced-motion: reduce) {
-  *,*::before,*::after { animation-duration:.001ms!important; animation-iteration-count:1!important; scroll-behavior:auto!important; transition-duration:.001ms!important; }
-}
