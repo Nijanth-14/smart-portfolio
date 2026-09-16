@@ -6,6 +6,8 @@ import { ClaimCredentialButton } from '@/components/ClaimCredentialButton';
 import { GenerateAssessmentButton } from '@/components/GenerateAssessmentButton';
 
 export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const revalidate = 0;
 
 function formatDuration(seconds: number): string {
   if (!seconds || seconds <= 0) return '—';
@@ -15,8 +17,10 @@ function formatDuration(seconds: number): string {
   return `${m}m ${s}s`;
 }
 
-export default async function AssessmentsDashboard() {
+export default async function AssessmentsDashboard({ searchParams }: { searchParams?: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const supabase = await createClient();
+  const resolvedParams = searchParams ? await searchParams : {};
+  const focus = resolvedParams?.focus as string | undefined;
 
   const { data: { user } } = await supabase.auth.getUser();
   let userAssessments: any[] = [];
@@ -68,7 +72,7 @@ export default async function AssessmentsDashboard() {
               Our AI model can dynamically generate LeetCode-style challenges to accurately evaluate your strongest skill sets.
             </p>
             {user && (
-              <GenerateAssessmentButton language={topLanguage} />
+              <GenerateAssessmentButton language={topLanguage} focus={focus} />
             )}
           </div>
         </div>

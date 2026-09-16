@@ -47,9 +47,9 @@ export function GenerateAssessmentButton({ language, focus }: { language?: strin
 
       setProgress(100);
       toast.success('New challenge generated! It has appeared below.');
-      // Brief pause so the user sees 100%, then hard reload to fetch fresh server data
+      // Brief pause so the user sees 100%, then refresh the Next.js router to fetch fresh server data smoothly
       setTimeout(() => {
-        window.location.reload();
+        router.refresh();
       }, 600);
     } catch (error: any) {
       toast.error(error.message || 'Failed to generate assessment. Please try again.');
