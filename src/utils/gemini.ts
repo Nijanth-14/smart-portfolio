@@ -36,6 +36,11 @@ export async function generateContentWithFallback(ai: any, prompt: string, confi
         return JSON.parse(sanitizedContent);
       } catch (error: any) {
         console.warn(`Model ${model} failed:`, error?.message || error);
+        
+        // DEBUG HACK: write error to file so we can see it
+        const fs = require('fs');
+        fs.appendFileSync('debug-gemini.txt', `Model ${model} failed: ${error?.message || error}\n`);
+        
         if (model === MODELS_TO_TRY[MODELS_TO_TRY.length - 1]) {
           console.error("All models failed.");
           throw new Error("All models failed");
@@ -48,6 +53,7 @@ export async function generateContentWithFallback(ai: any, prompt: string, confi
     return await Promise.race([generationPromise(), timeoutPromise]);
   } catch (err: any) {
     console.error("Falling back to mock data for demo reliability due to:", err.message);
+    if (!mockResponse) throw err;
     return mockResponse;
   }
 }

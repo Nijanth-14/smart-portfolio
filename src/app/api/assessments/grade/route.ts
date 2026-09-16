@@ -50,14 +50,22 @@ export async function POST(request: Request) {
       feedback: "Great explanation! You clearly understand the time complexity and correctly identified the edge cases."
     };
 
-    const gradeData = await generateContentWithFallback(ai, prompt, {
-        responseMimeType: "application/json",
-        systemInstruction: `Respond strictly in the following JSON format:
-        {
-          "score": 95,
-          "feedback": "String (Short 2 sentence feedback)"
-        }`
-    }, mockResponse);
+    let gradeData;
+    try {
+        gradeData = await generateContentWithFallback(ai, prompt, {
+            responseMimeType: "application/json",
+            systemInstruction: `Respond strictly in the following JSON format:
+            {
+              "score": 0,
+              "feedback": "String (Short 2 sentence feedback)"
+            }`
+        }, null); // pass null for mockResponse to force throw
+    } catch (e: any) {
+        return NextResponse.json({ 
+          success: true, 
+          grade: { score: 1, feedback: `DEBUG ERROR: ${e.message}` } 
+        });
+    }
 
     return NextResponse.json({ 
       success: true, 
