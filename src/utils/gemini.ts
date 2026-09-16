@@ -22,7 +22,18 @@ export async function generateContentWithFallback(ai: any, prompt: string, confi
         });
         const content = response.text;
         if (!content) throw new Error("No content generated");
-        return JSON.parse(content);
+        
+        // Extract the JSON object from the response, ignoring any surrounding markdown or conversational text
+        const jsonStartIndex = content.indexOf('{');
+        const jsonEndIndex = content.lastIndexOf('}');
+        
+        if (jsonStartIndex === -1 || jsonEndIndex === -1) {
+          throw new Error("No valid JSON object found in response");
+        }
+        
+        const sanitizedContent = content.substring(jsonStartIndex, jsonEndIndex + 1);
+        
+        return JSON.parse(sanitizedContent);
       } catch (error: any) {
         console.warn(`Model ${model} failed:`, error?.message || error);
         if (model === MODELS_TO_TRY[MODELS_TO_TRY.length - 1]) {
