@@ -19,13 +19,19 @@ export function GenerateAssessmentButton({ language }: { language: string }) {
         body: JSON.stringify({ language })
       });
 
+      let data;
       if (!res.ok) {
-        const data = await res.json();
+        try {
+          data = await res.json();
+        } catch(e) {
+          throw new Error('Server returned an invalid response. It might have timed out.');
+        }
         throw new Error(data.error || 'Failed to generate assessment');
       }
 
       // Refresh the page to show the new assessment
       router.refresh();
+      alert('Successfully generated a new challenge! It has been added to the top of your list below.');
     } catch (error: any) {
       console.error('Error generating assessment:', error);
       alert(error.message || 'Failed to generate assessment. Please try again.');
