@@ -1,12 +1,48 @@
 "use client";
 import React, { useState } from 'react';
-import { Briefcase, CheckCircle, XCircle, AlertCircle, ArrowRight, Code2 } from 'lucide-react';
+import { Briefcase, CheckCircle, XCircle, AlertCircle, ArrowRight, Code2, Upload, FileText } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function JobReadiness() {
   const [jobDescription, setJobDescription] = useState('');
   const [isChecking, setIsChecking] = useState(false);
   const [readiness, setReadiness] = useState<any[] | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== 'application/pdf') {
+      toast.error('Please upload a valid PDF file.');
+      return;
+    }
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await fetch('/api/parse-pdf', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to parse PDF');
+      }
+
+      const data = await response.json();
+      setJobDescription((prev) => prev ? prev + '\n\n--- PDF Content ---\n\n' + data.text : data.text);
+      toast.success('PDF text extracted successfully!');
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message || 'Error extracting PDF text');
+    } finally {
+      setIsUploading(false);
+      if (e.target) e.target.value = ''; // Reset input
+    }
+  };
 
   const handleCheck = async () => {
     if (!jobDescription.trim()) return;
@@ -64,6 +100,30 @@ export default function JobReadiness() {
             placeholder="Paste Job Description here..."
             className="w-full h-32 bg-slate-800/50 border border-slate-700 rounded-lg p-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500/50 resize-none"
           />
+          
+          <div className="flex items-center justify-between">
+            <div className="relative">
+              <input 
+                type="file" 
+                accept="application/pdf"
+                onChange={handleFileUpload}
+                disabled={isUploading || isChecking}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+              />
+              <button 
+                type="button"
+                disabled={isUploading || isChecking}
+                className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-300 text-sm font-medium rounded-lg transition-colors border border-slate-700"
+              >
+                {isUploading ? <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-slate-300"></span> : <Upload className="w-4 h-4" />}
+                {isUploading ? 'Extracting text...' : 'Upload PDF'}
+              </button>
+            </div>
+            <span className="text-xs text-slate-500 flex items-center gap-1">
+              <FileText className="w-3 h-3" /> PDF only
+            </span>
+          </div>
+
           <button 
             onClick={handleCheck}
             disabled={isChecking || !jobDescription.trim()}

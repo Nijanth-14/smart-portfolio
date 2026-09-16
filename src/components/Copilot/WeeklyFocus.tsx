@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Target, Code, FileText, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
+import Link from 'next/link';
 
 export default function WeeklyFocus() {
   const [isConnected, setIsConnected] = useState(false);
@@ -99,9 +100,9 @@ export default function WeeklyFocus() {
               <h3 className="text-sm font-semibold text-indigo-400 mb-1 uppercase tracking-wider">Action Plan</h3>
               <p className="text-indigo-100 mb-4">{focusArea.action}</p>
               
-              <button className="flex items-center gap-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-md transition-colors w-full justify-center">
+              <Link href="/assessments?company=general" className="flex items-center gap-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-md transition-colors w-full justify-center">
                 Start 20-Min Exercise <ArrowRight className="w-4 h-4" />
-              </button>
+              </Link>
             </div>
           </div>
         )
