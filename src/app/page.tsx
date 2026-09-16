@@ -19,16 +19,16 @@ export default function Home() {
             <HeroBadge />
           </div>
           
-          <div className="mb-6 w-full flex items-center justify-center">
+          <div className="mb-6 w-full max-w-4xl mx-auto min-h-[120px]">
             <MaskedHeading 
               text="Level up based on your actual code." 
               tag="h1"
               className="font-extrabold tracking-tight"
               align="center"
-              textScale={0.065}
+              textScale={0.09}
               src="https://images.unsplash.com/photo-1527715795493-9c8fb9956608?q=80&w=2070&auto=format&fit=crop"
-              parallax={40}
-              trigger="mount"
+              parallax={20}
+              trigger="view"
               reveal="rise"
               duration={1.2}
             />
