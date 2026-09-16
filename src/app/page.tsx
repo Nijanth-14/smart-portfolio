@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Code2, FileCheck2, Github, Sparkles, Zap, ShieldCheck, Rocket } from 'lucide-react';
+import { ArrowRight, Code2, FileCheck2, GitBranch, Sparkles, Zap, ShieldCheck, Rocket } from 'lucide-react';
 import WeeklyFocus from '../components/Copilot/WeeklyFocus';
 import JobReadiness from '../components/Copilot/JobReadiness';
 import SplitText from '../components/SplitText';
@@ -80,7 +80,7 @@ export default function Home() {
             <div className="lightning-line" />
             <StaggerContainer className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
               {[
-                [Github, 'Real code', 'Analyze the work you actually ship.'],
+                [GitBranch, 'Real code', 'Analyze the work you actually ship.'],
                 [Sparkles, 'Adaptive AI', 'Challenges shaped around your stack.'],
                 [FileCheck2, 'Verifiable proof', 'Earn credentials backed by evidence.'],
               ].map(([Icon, title, desc]: any) => (
