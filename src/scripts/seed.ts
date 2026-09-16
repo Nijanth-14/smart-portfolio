@@ -1,8 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Setup basic dummy data for pitch presentation
-const DEMO_USER_ID = '00000000-0000-0000-0000-000000000000'; // Make sure this UUID format is valid in your auth.users if checking foreign keys
-
 const githubStats = {
   followers: 1254,
   public_repos: 42,
@@ -54,12 +51,48 @@ async function seed() {
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-  console.log('Seeding demo profile...');
+  console.log('Creating demo user in auth...');
+
+  const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+    email: 'demo@smartportfolio.com',
+    password: 'password123',
+    email_confirm: true,
+  });
+
+  if (authError) {
+    if (authError.code === 'email_exists' || authError.message.includes('already been registered') || authError.message.includes('already exists')) {
+      console.log('Demo user already exists in auth.');
+    } else {
+      console.error('Error creating demo user:', authError);
+      return;
+    }
+  }
+
+  // If the user already existed, we need to fetch their ID. Otherwise, use the new ID.
+  let demoUserId = authData?.user?.id;
+  
+  if (!demoUserId) {
+    const { data: users, error: fetchError } = await supabase.auth.admin.listUsers();
+    if (fetchError || !users) {
+      console.error('Could not fetch existing users:', fetchError);
+      return;
+    }
+    const existingUser = users.users.find(u => u.email === 'demo@smartportfolio.com');
+    if (existingUser) {
+      demoUserId = existingUser.id;
+    } else {
+       console.error('Could not find demo user ID.');
+       return;
+    }
+  }
+
+  console.log(`Demo User ID: ${demoUserId}`);
+  console.log('Seeding demo profile data...');
 
   const { error } = await supabase
     .from('profiles')
     .upsert({
-      id: DEMO_USER_ID,
+      id: demoUserId,
       username: 'johndoe_demo',
       full_name: 'John Doe (Demo)',
       avatar_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=256&q=80',
@@ -70,7 +103,7 @@ async function seed() {
     console.error('Error seeding profile:', error);
   } else {
     console.log('Successfully seeded demo profile!');
-    console.log(`Demo Profile User ID: ${DEMO_USER_ID}`);
+    console.log(`You can now view the demo at: http://localhost:3000/portfolio/${demoUserId}`);
   }
 }
 
