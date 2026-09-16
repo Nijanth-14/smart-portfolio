@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     });
 
     const completion = await openai.chat.completions.create({
-      model: "llama3-70b-8192",
+      model: "llama-3.1-70b-versatile",
       messages: [
         { role: "system", content: "You are a coding assessment generator. You must respond with valid JSON only." },
         { role: "user", content: prompt }
