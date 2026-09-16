@@ -29,11 +29,6 @@ export default function Home() {
           >
             <Code2 className="w-5 h-5" /> Take an Assessment
           </Link>
-          <p className="text-slate-500 text-sm mx-2 hidden sm:block">or</p>
-          <span className="text-slate-400 text-sm sm:hidden">or</span>
-          <p className="text-slate-400 text-sm font-medium border border-slate-800 bg-slate-900/50 px-6 py-3 rounded-lg flex items-center justify-center gap-2 w-full sm:w-auto">
-            Login via the Navbar above!
-          </p>
         </div>
       </div>
     </div>
