@@ -18,13 +18,16 @@ export default function JobReadiness() {
         body: JSON.stringify({ jobDescription })
       });
       
-      if (!response.ok) throw new Error('Failed to check readiness');
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to check readiness');
+      }
       const data = await response.json();
       
       setReadiness(data.readiness);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert('Failed to check readiness. Make sure you are logged in and have analyzed your GitHub profile first.');
+      alert(`Error: ${error.message}`);
     } finally {
       setIsChecking(false);
     }

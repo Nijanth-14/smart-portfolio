@@ -15,7 +15,10 @@ export default function WeeklyFocus() {
     setIsAnalyzing(true);
     try {
       const response = await fetch('/api/analyze-github', { method: 'POST' });
-      if (!response.ok) throw new Error('Analysis failed');
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || 'Analysis failed');
+      }
       const data = await response.json();
       
       setIsConnected(true);
@@ -27,9 +30,9 @@ export default function WeeklyFocus() {
         evidence: `Based on your GitHub profile and common stack: ${data.analysis_data.common_stack?.join(', ')}`,
         action: data.analysis_data.weekly_focus || 'Keep coding and building projects!'
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert('Failed to analyze GitHub data. Have you logged in and synced?');
+      alert(`Error: ${error.message}`);
     } finally {
       setIsAnalyzing(false);
     }
@@ -57,7 +60,7 @@ export default function WeeklyFocus() {
           <button 
             onClick={handleConnect}
             disabled={isAnalyzing}
-            className="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+            className="px-6 py-2.5 bg-red-600 hover:bg-red-500 disabled:bg-red-900/50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors shadow-lg shadow-red-500/20 flex items-center gap-2"
           >
             {isAnalyzing ? (
               <span className="flex items-center gap-2">Analyzing Profile... <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span></span>
