@@ -8,7 +8,7 @@ const MODELS_TO_TRY = [
 
 export async function generateContentWithFallback(ai: any, prompt: string, config: any, mockResponse: any) {
   const timeoutPromise = new Promise<any>((_, reject) => {
-    setTimeout(() => reject(new Error("AI generation timed out (Vercel limit approach)")), 7500);
+    setTimeout(() => reject(new Error("AI generation timed out (55s limit)")), 55000);
   });
 
   const generationPromise = async () => {
