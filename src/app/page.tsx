@@ -11,7 +11,7 @@ export default function Home() {
       
       <div className="max-w-4xl mx-auto px-4 text-center z-10 relative">
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-900 border border-slate-800 rounded-full text-indigo-400 text-sm font-medium mb-8">
-          <ShieldCheck className="w-4 h-4" /> Team Nexus
+          <ShieldCheck className="w-4 h-4" /> Team Titans
         </div>
         
         <h1 className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-200 to-slate-500 mb-8 tracking-tight">
