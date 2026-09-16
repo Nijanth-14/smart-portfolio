@@ -115,14 +115,14 @@ export default function Home() {
             <p className="text-xs font-bold uppercase tracking-[.25em] text-violet-300">Your developer copilot</p>
             <h2 className="mt-3 text-3xl sm:text-4xl font-black tracking-tight">Turn your gaps into a plan.</h2>
           </Reveal>
-          <StaggerContainer className="grid lg:grid-cols-2 gap-6">
-            <StaggerItem>
+          <div className="grid lg:grid-cols-2 gap-6">
+            <Reveal delay={0.1}>
               <WeeklyFocus />
-            </StaggerItem>
-            <StaggerItem>
+            </Reveal>
+            <Reveal delay={0.2}>
               <JobReadiness />
-            </StaggerItem>
-          </StaggerContainer>
+            </Reveal>
+          </div>
         </section>
 
         <section className="pb-28">
@@ -130,13 +130,13 @@ export default function Home() {
             <p className="text-xs font-bold uppercase tracking-[.25em] text-cyan-300">Why SkillForge</p>
             <h2 className="mt-3 text-3xl sm:text-4xl font-black tracking-tight">Portfolios built on proof, not vibes.</h2>
           </Reveal>
-          <StaggerContainer className="grid sm:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-3 gap-6">
             {[
               [Rocket, 'Ship in minutes', 'Generate a tailored challenge from your GitHub in seconds, not hours.'],
               [ShieldCheck, 'Cryptographically verified', 'Every credential is signed — recruiters can verify it independently.'],
               [Code2, 'Real problems, real code', 'No trivia. You write and run actual code against hidden test cases.'],
-            ].map(([Icon, title, desc]: any) => (
-              <StaggerItem key={title}>
+            ].map(([Icon, title, desc]: any, i) => (
+              <Reveal key={title} delay={0.1 + i * 0.1}>
                 <div className="ring-spin shine-sweep glass rounded-3xl p-7 card-lift h-full">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-300/20 to-violet-400/10 border border-cyan-300/20 grid place-items-center mb-5">
                     <Icon className="w-6 h-6 text-cyan-300" />
@@ -144,9 +144,9 @@ export default function Home() {
                   <h3 className="font-black text-lg text-white">{title}</h3>
                   <p className="text-sm leading-6 text-slate-500 mt-2">{desc}</p>
                 </div>
-              </StaggerItem>
+              </Reveal>
             ))}
-          </StaggerContainer>
+          </div>
         </section>
       </main>
     </div>
