@@ -54,7 +54,7 @@ export async function POST(request: Request) {
         responseMimeType: "application/json",
         systemInstruction: `Respond strictly in the following JSON format:
         {
-          "score": 95, // integer out of 100
+          "score": 95,
           "feedback": "String (Short 2 sentence feedback)"
         }`
     }, mockResponse);
