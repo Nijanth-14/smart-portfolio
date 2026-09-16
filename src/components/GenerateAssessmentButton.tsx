@@ -20,14 +20,15 @@ export function GenerateAssessmentButton({ language }: { language: string }) {
       });
 
       if (!res.ok) {
-        throw new Error('Failed to generate assessment');
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to generate assessment');
       }
 
       // Refresh the page to show the new assessment
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error generating assessment:', error);
-      alert('Failed to generate assessment. Please try again.');
+      alert(error.message || 'Failed to generate assessment. Please try again.');
     } finally {
       setIsGenerating(false);
     }
