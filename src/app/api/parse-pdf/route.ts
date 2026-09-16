@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(arrayBuffer);
 
     const pdfText = await new Promise<string>((resolve, reject) => {
-      const pdfParser = new PDFParser(this, 1); // 1 = text mode
+      const pdfParser = new PDFParser(null, true); // true = text mode
       
       pdfParser.on("pdfParser_dataError", (errData: any) => reject(errData.parserError));
       pdfParser.on("pdfParser_dataReady", (pdfData: any) => {
